@@ -1,4 +1,4 @@
-#include "computerlib.h"
+#include <libcomputer/computerlib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
