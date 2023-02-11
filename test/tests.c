@@ -36,7 +36,7 @@ CTEST (test_memSave, sc_memorySave){
     ASSERT_EQUAL(sc_memorySave(path), 0);
 }
 
-CTEST (test_memLoad, sc_memoryLoad){ 
+CTEST (test_memLoad, sc_memoryLoad){
     char* path = "/home/kuroro/MySimpleComputerwork/mysimplecomputer/test/testLoad.bin";
     printf("\n");
     sc_memoryInit();
