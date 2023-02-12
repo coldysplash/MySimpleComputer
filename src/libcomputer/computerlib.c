@@ -23,7 +23,7 @@ static int flag_reg;
 #define FLAG_WRONG_COMMAND 5 // указана неверная команда
 
 
-// инициализация оперативной памяти Sipmle Comuter
+// инициализация оперативной памяти Sipmle Computer
 int sc_memoryInit(){
     memset(sc_ram, 0, sizeof(sc_ram));
 
