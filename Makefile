@@ -16,8 +16,6 @@ OBJ_TEST_DIR = $(OBJ_DIR)/$(TEST_DIR)
 
 all: computerlib.o main.o app libmySimpleComputer.a
 
-
-
 app : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o libmySimpleComputer.a
 	$(CC) $(FLAGS) -L. -lmySimpleComputer -o $(EXE_DIR)/$@ $^
 
@@ -32,7 +30,6 @@ computerlib.o : $(COMPLIB_DIR)/computerlib.c
 
 run: $(EXE_DIR)/app
 	$(EXE_DIR)/app
-
 
 # TEST
 
