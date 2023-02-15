@@ -1,10 +1,14 @@
 CC = gcc
 FLAGS = -Wall -Wextra -Werror
 
+APP_NAME = MySimpleComputer
+TEST_NAME = test
+
 SRC_DIR = src
 TEST_DIR = test
 OBJ_DIR = obj
-EXE_DIR = bin
+BIN_DIR = bin
+LIB_DIR = lib
 
 COMPLIB_DIR = $(SRC_DIR)/libcomputer
 MAIN_DIR = $(SRC_DIR)/app
@@ -12,33 +16,35 @@ MAIN_DIR = $(SRC_DIR)/app
 OBJ_SRC_DIR = $(OBJ_DIR)/$(SRC_DIR)
 OBJ_TEST_DIR = $(OBJ_DIR)/$(TEST_DIR)
 
-.PHONY: app all
+APP_PATH = $(BIN_DIR)/$(APP_NAME)
+TEST_PATH = $(BIN_DIR)/$(TEST_NAME)
 
-all: computerlib.o main.o app libmySimpleComputer.a
+.PHONY: all
 
-app : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o libmySimpleComputer.a
-	$(CC) $(FLAGS) -L. -lmySimpleComputer -o $(EXE_DIR)/$@ $^
+all: $(APP_PATH)
 
-libmySimpleComputer.a : $(OBJ_SRC_DIR)/computerlib.o
-	ar rc libmySimpleComputer.a $(OBJ_SRC_DIR)/computerlib.o
+$(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(LIB_DIR)/libmySimpleComputer.a
+	$(CC) $(FLAGS) $^ -o $@
 
-main.o : $(MAIN_DIR)/main.c
-	$(CC) -I src -c $(FLAGS) -o $(OBJ_SRC_DIR)/$@ $<
+$(LIB_DIR)/libmySimpleComputer.a : $(OBJ_SRC_DIR)/computerlib.o
+	ar rc $@ $^
 
-computerlib.o : $(COMPLIB_DIR)/computerlib.c
-	$(CC) -I src -c $(FLAGS) -o $(OBJ_SRC_DIR)/$@ $<
+$(OBJ_SRC_DIR)/main.o : $(MAIN_DIR)/main.c
+	$(CC) -I src -c $(FLAGS) -o $@ $<
 
-run: $(EXE_DIR)/app
-	$(EXE_DIR)/app
+$(OBJ_SRC_DIR)/computerlib.o : $(COMPLIB_DIR)/computerlib.c
+	$(CC) -I src -c $(FLAGS) -o $@ $<
+
+run: $(APP_PATH)
+	$(APP_PATH)
 
 # TEST
+.PHONY: test
 
-.PHONY: all test
+test: $(TEST_PATH)
 
-test: all test.o main_test.o test_app 
-
-test_app: $(OBJ_TEST_DIR)/test.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o libmySimpleComputer.a
-	$(CC) $(FLAGS) -L. -lmySimpleComputer -o $(EXE_DIR)/$@ $^
+$(TEST_PATH) : $(OBJ_TEST_DIR)/test.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(LIB_DIR)/libmySimpleComputer.a
+	$(CC) $(FLAGS) $^ -o $@
 
 main_test.o: $(TEST_DIR)/main.c
 	$(CC) $(FLAGS) -I thirdparty -I src -c -o $(OBJ_TEST_DIR)/$@ $<
@@ -46,9 +52,10 @@ main_test.o: $(TEST_DIR)/main.c
 test.o: $(TEST_DIR)/tests.c
 	$(CC) $(FLAGS) -I thirdparty -I src -c -o $(OBJ_TEST_DIR)/$@ $<
 
-test_run: $(EXE_DIR)/test_app
-	$(EXE_DIR)/test_app
+test_run: $(TEST_PATH)
+	$(TEST_PATH)
 
+.PHONY: clean
 
 clean:
-	rm -rf obj/src/* bin/* 
+	rm -rf obj/src/* bin/*
