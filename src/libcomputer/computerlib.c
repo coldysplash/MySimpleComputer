@@ -32,24 +32,23 @@ int sc_memoryInit(){
 
 //sc_memorySet - задает значение указанной ячейки памяти как value
 int sc_memorySet(int address, int value){
-    if(address < 0 || address > 99){
+    if(address >= 0 || address < memorysize){
+        sc_ram[address] = value;
+    }else{
         sc_regSet(FLAG_WRONG_ADDRESS, 1);
         return -1;
-    }else{
-        sc_ram[address] = value;
     }
     return 0;
 }
 
 //sc_memoryGet – возвращает значение указанной ячейки памяти в value.
 int sc_memoryGet(int address, int *value){
-    if(address < 0 || address > 99){
+    if(address >= 0 || address < memorysize){
+        *value = sc_ram[address];
+    }else{
         sc_regSet(FLAG_WRONG_ADDRESS, 1);
         return -1;
     }
-
-    *value = sc_ram[address];
-
     return 0;
 }
 
@@ -149,7 +148,6 @@ int sc_commadDecode(int value, int *command, int *operand){
     *operand = value & MASK_DECODE_COMMAND;
     value >>= 7;
     *command = value;
-
 
     return 0;
 }
