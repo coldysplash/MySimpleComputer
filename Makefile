@@ -39,6 +39,7 @@ run: $(APP_PATH)
 	$(APP_PATH)
 
 # TEST
+
 .PHONY: test
 
 test: $(TEST_PATH)
@@ -46,11 +47,11 @@ test: $(TEST_PATH)
 $(TEST_PATH) : $(OBJ_TEST_DIR)/test.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(LIB_DIR)/libmySimpleComputer.a
 	$(CC) $(FLAGS) $^ -o $@
 
-main_test.o: $(TEST_DIR)/main.c
-	$(CC) $(FLAGS) -I thirdparty -I src -c -o $(OBJ_TEST_DIR)/$@ $<
+$(OBJ_TEST_DIR)/main_test.o : $(TEST_DIR)/main.c
+	$(CC) $(FLAGS) -I thirdparty -I src -c -o $@ $<
 
-test.o: $(TEST_DIR)/tests.c
-	$(CC) $(FLAGS) -I thirdparty -I src -c -o $(OBJ_TEST_DIR)/$@ $<
+$(OBJ_TEST_DIR)/test.o : $(TEST_DIR)/tests.c
+	$(CC) $(FLAGS) -I thirdparty -I src -c -o $@ $<
 
 test_run: $(TEST_PATH)
 	$(TEST_PATH)
@@ -58,4 +59,4 @@ test_run: $(TEST_PATH)
 .PHONY: clean
 
 clean:
-	rm -rf obj/src/* bin/*
+	rm -rf obj/src/* obj/test/* bin/*
