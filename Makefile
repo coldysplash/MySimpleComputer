@@ -11,6 +11,7 @@ BIN_DIR = bin
 LIB_DIR = lib
 
 COMPLIB_DIR = $(SRC_DIR)/libcomputer
+TERM_DIR = $(SRC_DIR)/libmyTerm
 MAIN_DIR = $(SRC_DIR)/app
 
 OBJ_SRC_DIR = $(OBJ_DIR)/$(SRC_DIR)
@@ -18,21 +19,29 @@ OBJ_TEST_DIR = $(OBJ_DIR)/$(TEST_DIR)
 
 APP_PATH = $(BIN_DIR)/$(APP_NAME)
 TEST_PATH = $(BIN_DIR)/$(TEST_NAME)
+LIB_COMPUTER_PATH = $(LIB_DIR)/libmySimpleComputer.a
+LIB_TERM_PATH = $(LIB_DIR)/libmyTerm.a
 
 .PHONY: all
 
 all: $(APP_PATH)
 
-$(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(LIB_DIR)/libmySimpleComputer.a
+$(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH)
 	$(CC) $(FLAGS) $^ -o $@
 
-$(LIB_DIR)/libmySimpleComputer.a : $(OBJ_SRC_DIR)/computerlib.o
+$(LIB_COMPUTER_PATH) : $(OBJ_SRC_DIR)/computerlib.o
+	ar rc $@ $^
+
+$(LIB_TERM_PATH) : $(OBJ_SRC_DIR)/myTerm.o
 	ar rc $@ $^
 
 $(OBJ_SRC_DIR)/main.o : $(MAIN_DIR)/main.c
 	$(CC) -I src -c $(FLAGS) -o $@ $<
 
 $(OBJ_SRC_DIR)/computerlib.o : $(COMPLIB_DIR)/computerlib.c
+	$(CC) -I src -c $(FLAGS) -o $@ $<
+
+$(OBJ_SRC_DIR)/myTerm.o : $(TERM_DIR)/myTerm.c
 	$(CC) -I src -c $(FLAGS) -o $@ $<
 
 run: $(APP_PATH)
