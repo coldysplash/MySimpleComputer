@@ -68,14 +68,14 @@ int mt_setfgcolor(enum Colors color){
 
     if (term == -1) {
         close(term);
-        return -1
+        return -1;
     }
 
     char buff[30];
 
     sprintf(buff, "\E[3%dm", color);
 
-    write(term, buf, strlen(buff));
+    write(term, buff, strlen(buff));
 
     close(term);
 
@@ -89,14 +89,14 @@ int mt_setbgcolor(enum Colors color){
 
     if (term == -1) {
         close(term);
-        return -1
+        return -1;
     }
 
     char buff[30];
 
     sprintf(buff, "\E[4%dm", color);
 
-    write(term, buf, strlen(buff));
+    write(term, buff, strlen(buff));
 
     close(term);
 
