@@ -7,7 +7,6 @@
 #include <unistd.h>
 
 #define TERM_PATH "/dev/tty"
-int mt_getscreensize(int *rows, int *cols);
 
 // mt_clrscr - производит очистку и перемещение курсора 
 //             в левый верхний угол экрана
@@ -15,6 +14,7 @@ int mt_clrscr(){
     int term = open(TERM_PATH, O_WRONLY);
 
     if(term == -1){
+        close(term);
         return -1;
     }
 
@@ -33,10 +33,10 @@ int mt_gotoXY(int x, int y){
         return -1;
     }
 
-    char buff[50];
+    char buff[30];
     sprintf(buff, "\E[%d;%dH", y, x);
 
-    int term = open(TERM_PATH, O_RDWR);
+    int term = open(TERM_PATH, O_WRONLY);
     if (term == -1) {
         return -1;
     }
@@ -47,7 +47,6 @@ int mt_gotoXY(int x, int y){
 
 // mt_getscreensize - определяет размер 
 //                    экрана терминала 
-
 int mt_getscreensize(int *rows, int *cols){
     struct winsize ws;
 
@@ -62,7 +61,44 @@ int mt_getscreensize(int *rows, int *cols){
     return 0;
 }
 
-// int main(){
-//     mt_gotoXY(10,10);
-//     return 0;
-// }
+// mt_setfgcolor - устанавливает цвет последующих 
+//                 выводимых символов
+int mt_setfgcolor(enum Colors color){
+    int term = open(TERM_PATH, O_WRONLY);
+
+    if (term == -1) {
+        close(term);
+        return -1
+    }
+
+    char buff[30];
+
+    sprintf(buff, "\E[3%dm", color);
+
+    write(term, buf, strlen(buff));
+
+    close(term);
+
+    return 0;
+}
+
+// mt_setbgcolor - устанавливает цвет фона 
+//                 последующих выводимых символов
+int mt_setbgcolor(enum Colors color){
+        int term = open(TERM_PATH, O_WRONLY);
+
+    if (term == -1) {
+        close(term);
+        return -1
+    }
+
+    char buff[30];
+
+    sprintf(buff, "\E[4%dm", color);
+
+    write(term, buf, strlen(buff));
+
+    close(term);
+
+    return 0;
+}
