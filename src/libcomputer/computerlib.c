@@ -4,7 +4,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define memorysize 100
 int sc_ram[memorysize]; // memory
 
 int sc_commands[] = {

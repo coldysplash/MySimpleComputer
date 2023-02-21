@@ -1,4 +1,8 @@
 #pragma once
+#ifndef MY_COMP_H
+
+#define memorysize 100
+extern int sc_ram[memorysize]; // memory
 
 int sc_memoryInit();
 int sc_memorySet(int address, int value);
@@ -11,3 +15,4 @@ int sc_regGet(int reg, int *value);
 int sc_commandEncode(int command, int operand, int *value);
 int sc_commadDecode(int value, int *command, int *operand);
 void print_memory();
+#endif
