@@ -11,16 +11,9 @@ int sc_commands[] = {
         52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64,
         65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76,
 };
+
 #define MASK_DECODE_COMMAND 0x7f
-
-//Флаги
 static int flag_reg;
-#define FLAG_OVERFLOW 1 // переполнение при выполнении операции
-#define FLAG_ERR_DIV_BY_ZERO 2 // ошибка деления на ноль
-#define FLAG_WRONG_ADDRESS 3 // ошибка выхода за границы памяти 
-#define FLAG_IGNOR_TEXT_IMPULS 4 // игнорирование текстовых импульсов 
-#define FLAG_WRONG_COMMAND 5 // указана неверная команда
-
 
 // инициализация оперативной памяти Sipmle Computer
 int sc_memoryInit(){
