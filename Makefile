@@ -26,7 +26,7 @@ LIB_TERM_PATH = $(LIB_DIR)/libmyTerm.a
 
 all: $(APP_PATH)
 
-$(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH)
+$(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(OBJ_SRC_DIR)/interface.o
 	$(CC) $(FLAGS) $^ -o $@
 
 $(LIB_COMPUTER_PATH) : $(OBJ_SRC_DIR)/computerlib.o
@@ -36,6 +36,9 @@ $(LIB_TERM_PATH) : $(OBJ_SRC_DIR)/myTerm.o
 	ar rc $@ $^
 
 $(OBJ_SRC_DIR)/main.o : $(MAIN_DIR)/main.c
+	$(CC) -I src -c $(FLAGS) -o $@ $<
+
+$(OBJ_SRC_DIR)/interface.o : $(MAIN_DIR)/interface.c
 	$(CC) -I src -c $(FLAGS) -o $@ $<
 
 $(OBJ_SRC_DIR)/computerlib.o : $(COMPLIB_DIR)/computerlib.c
