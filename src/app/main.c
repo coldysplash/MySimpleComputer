@@ -1,17 +1,18 @@
 #include <libcomputer/computerlib.h>
 #include <libmyTerm/myTerm.h>
+#include <app/interface.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 int main(){
     mt_clrscr();
-
-
-
-    #if 0
     mt_setfgcolor(Red);
     mt_setbgcolor(White);
-    printf("HEllo");
+    sc_memoryInit();
+    sc_memorySet(1, 555);
+    show_memory();
+
+    #if 0
     int *r = malloc(sizeof(u_int));
     int *c = malloc(sizeof(u_int));
     mt_getscreensize(r,c);
