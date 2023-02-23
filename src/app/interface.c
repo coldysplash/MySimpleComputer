@@ -11,7 +11,7 @@
 
 int show_memory(){
 
-    char buff[6];
+    char buff[7];
     int term = open(TERM_PATH, O_WRONLY);
     if (term == -1) {
         close(term);
@@ -24,14 +24,12 @@ int show_memory(){
     for(int i = 0; i != 10; ++i){
         mt_gotoXY(x1, y1++);
         for(int j = 0; j != 10; ++j){
-            if (sc_memoryGet(i * 10 + j, value) == -1) {
-                return -1;
-            } 
+	    sc_memoryGet(i * 10 + j, value);
             check_plus = *value & 0x4000;
             if(check_plus == 0){
-                sprintf(buff, "%s%04X", "+", *value);
+                sprintf(buff, "%s%04X ", "+", *value);
             }else{
-                sprintf(buff, "%s%04X", "-", *value);
+                sprintf(buff, "%s%04X ", "-", *value);
             }
             write(term, buff, strlen(buff));
         }
