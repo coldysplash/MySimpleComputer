@@ -22,9 +22,15 @@ TEST_PATH = $(BIN_DIR)/$(TEST_NAME)
 LIB_COMPUTER_PATH = $(LIB_DIR)/libmySimpleComputer.a
 LIB_TERM_PATH = $(LIB_DIR)/libmyTerm.a
 
-.PHONY: all
+.PHONY: all mkdir
 
-all: $(APP_PATH)
+all: mkdir $(APP_PATH)
+
+mkdir:
+	mkdir -p $(BIN_DIR)
+	mkdir -p $(OBJ_DIR)
+	mkdir -p $(OBJ_SRC_DIR)
+	mkdir -p $(OBJ_TEST_DIR)
 
 $(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(OBJ_SRC_DIR)/interface.o
 	$(CC) $(FLAGS) $^ -o $@
@@ -71,4 +77,4 @@ test_run: $(TEST_PATH)
 .PHONY: clean
 
 clean:
-	rm -rf obj/src/* obj/test/* bin/*
+	rm -rf obj bin
