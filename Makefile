@@ -31,6 +31,7 @@ mkdir:
 	mkdir -p $(OBJ_DIR)
 	mkdir -p $(OBJ_SRC_DIR)
 	mkdir -p $(OBJ_TEST_DIR)
+	mkdir -p $(LIB_DIR)
 
 $(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(OBJ_SRC_DIR)/interface.o
 	$(CC) $(FLAGS) $^ -o $@
@@ -77,4 +78,4 @@ test_run: $(TEST_PATH)
 .PHONY: clean
 
 clean:
-	rm -rf obj bin
+	rm -rf obj bin lib
