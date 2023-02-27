@@ -24,24 +24,22 @@ int sc_memoryInit(){
 
 //sc_memorySet - задает значение указанной ячейки памяти как value
 int sc_memorySet(int address, int value){
-    if(address >= 0 || address < memorysize){
-        sc_ram[address] = value;
-    }else{
+    if(address < 0 || address > memorysize){
         sc_regSet(FLAG_WRONG_ADDRESS, 1);
         return -1;
     }
+    sc_ram[address] = value;
     return 0;
 }
 
 //sc_memoryGet – возвращает значение указанной ячейки памяти в value.
 int sc_memoryGet(int address, int *value){
-    if(address >= 0 || address < memorysize){
-        *value = sc_ram[address];
-    }else{
+    if(address < 0 || address > memorysize){
         sc_regSet(FLAG_WRONG_ADDRESS, 1);
         return -1;
     }
-    return 0;
+        *value = sc_ram[address];
+        return 0;
 }
 
 // sc_memorySave - сохраняет содержимое памяти в файл в бинарном виде
