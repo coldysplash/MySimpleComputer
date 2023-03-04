@@ -10,7 +10,7 @@ int main(){
     mt_setbgcolor(White);
     sc_memoryInit();
     sc_memorySet(1, 555);
-    sc_memorySet(25, 27);
+    sc_memorySet(2, 10);
     show_memory();
 
     #if 0
