@@ -63,7 +63,7 @@ run: $(APP_PATH)
 
 test: $(TEST_PATH)
 
-$(TEST_PATH) : $(OBJ_TEST_DIR)/test.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(LIB_DIR)/libmySimpleComputer.a
+$(TEST_PATH) : $(OBJ_TEST_DIR)/test.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH)
 	$(CC) $(FLAGS) $^ -o $@
 
 $(OBJ_TEST_DIR)/main_test.o : $(TEST_DIR)/main.c

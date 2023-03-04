@@ -11,13 +11,7 @@ int main(){
     sc_memoryInit();
     sc_memorySet(1, 555);
     sc_memorySet(2, 10);
-    show_memory();
+    show_interface();
 
-    #if 0
-    int *r = malloc(sizeof(u_int));
-    int *c = malloc(sizeof(u_int));
-    mt_getscreensize(r,c);
-    mt_gotoXY(5,5); // 129, 129 Error
-    #endif
     return 0;
 }

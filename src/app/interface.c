@@ -8,7 +8,7 @@
 
 #define TERM_PATH "/dev/tty"
 
-int show_memory(){
+int show_interface(){
 
     char buff[10];
     int term = open(TERM_PATH, O_WRONLY);
