@@ -14,7 +14,7 @@ show_interface ()
 
   char buff[10];
   int term = open (TERM_PATH, O_WRONLY);
-  if (term == -1)
+  if (term == -1 || isatty(0) == 0 || isatty(1) == 0)
     {
       close (term);
       return -1;

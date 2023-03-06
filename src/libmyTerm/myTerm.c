@@ -15,9 +15,11 @@ mt_clrscr ()
 {
   int term = open (TERM_PATH, O_WRONLY);
 
-  if (term == -1 || !isatty(0))
+  if (term == -1 || isatty(0) == 0 || isatty(1) == 0)
     {
-      close (term);
+      close(term);
+      fprintf(stderr, "Поток вывода не связан с терминалом\n");
+      //close (term);
       return -1;
     }
 
@@ -43,7 +45,7 @@ mt_gotoXY (int x, int y)
   sprintf (buff, "\E[%d;%dH", y, x);
 
   int term = open (TERM_PATH, O_WRONLY);
-  if (term == -1 || !isatty(0))
+  if (term == -1 || isatty(0) == 0 || isatty(1) == 0)
     {
       return -1;
     }
@@ -77,7 +79,7 @@ mt_setfgcolor (enum Colors color)
 {
   int term = open (TERM_PATH, O_WRONLY);
 
-  if (term == -1 || !isatty(0))
+  if (term == -1 || isatty(0) == 0 || isatty(1) == 0)
     {
       close (term);
       return -1;
@@ -101,7 +103,7 @@ mt_setbgcolor (enum Colors color)
 {
   int term = open (TERM_PATH, O_WRONLY);
 
-  if (term == -1 || !isatty(0))
+  if (term == -1 || isatty(0) == 0 || isatty(1) == 0)
     {
       close (term);
       return -1;
