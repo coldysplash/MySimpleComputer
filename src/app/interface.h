@@ -1,3 +1,3 @@
 #pragma once
 
-int show_interface();
+int show_interface ();
