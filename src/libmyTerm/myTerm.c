@@ -15,7 +15,7 @@ mt_clrscr ()
 {
   int term = open (TERM_PATH, O_WRONLY);
 
-  if (term == -1)
+  if (term == -1 || !isatty(0))
     {
       close (term);
       return -1;
@@ -43,7 +43,7 @@ mt_gotoXY (int x, int y)
   sprintf (buff, "\E[%d;%dH", y, x);
 
   int term = open (TERM_PATH, O_WRONLY);
-  if (term == -1)
+  if (term == -1 || !isatty(0))
     {
       return -1;
     }
@@ -77,7 +77,7 @@ mt_setfgcolor (enum Colors color)
 {
   int term = open (TERM_PATH, O_WRONLY);
 
-  if (term == -1)
+  if (term == -1 || !isatty(0))
     {
       close (term);
       return -1;
@@ -101,7 +101,7 @@ mt_setbgcolor (enum Colors color)
 {
   int term = open (TERM_PATH, O_WRONLY);
 
-  if (term == -1)
+  if (term == -1 || !isatty(0))
     {
       close (term);
       return -1;
