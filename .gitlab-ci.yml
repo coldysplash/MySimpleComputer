@@ -7,7 +7,7 @@ stages:
 check-format:
   stage: check-format
   script:
-  - find . -type f -name .[ch] ! -name 'ctest.h' | xargs clang-format --style GNU -i --verbose
+  - find . -type f -name '.*[ch]' ! -name 'ctest.h' | xargs clang-format --style GNU -i --verbose
   - git diff --exit-code
 
 build:
