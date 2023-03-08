@@ -6,8 +6,6 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-#define TERM_PATH "/dev/tty"
-
 // mt_clrscr - производит очистку и перемещение курсора
 //             в левый верхний угол экрана
 int
