@@ -1,54 +1,81 @@
 CC = gcc
 FLAGS = -Wall -Wextra -Werror
 
+APP_NAME = MySimpleComputer
+TEST_NAME = test
+
 SRC_DIR = src
 TEST_DIR = test
 OBJ_DIR = obj
-EXE_DIR = bin
+BIN_DIR = bin
+LIB_DIR = lib
 
 COMPLIB_DIR = $(SRC_DIR)/libcomputer
+TERM_DIR = $(SRC_DIR)/libmyTerm
 MAIN_DIR = $(SRC_DIR)/app
 
 OBJ_SRC_DIR = $(OBJ_DIR)/$(SRC_DIR)
 OBJ_TEST_DIR = $(OBJ_DIR)/$(TEST_DIR)
 
-.PHONY: app all
+APP_PATH = $(BIN_DIR)/$(APP_NAME)
+TEST_PATH = $(BIN_DIR)/$(TEST_NAME)
+LIB_COMPUTER_PATH = $(LIB_DIR)/libmySimpleComputer.a
+LIB_TERM_PATH = $(LIB_DIR)/libmyTerm.a
 
-all: computerlib.o main.o app libmySimpleComputer.a
+.PHONY: all mkdir
 
-app : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o libmySimpleComputer.a
-	$(CC) $(FLAGS) -L. -lmySimpleComputer -o $(EXE_DIR)/$@ $^
+all: mkdir $(APP_PATH)
 
-libmySimpleComputer.a : $(OBJ_SRC_DIR)/computerlib.o
-	ar rc libmySimpleComputer.a $(OBJ_SRC_DIR)/computerlib.o
+mkdir:
+	mkdir -p $(BIN_DIR)
+	mkdir -p $(OBJ_DIR)
+	mkdir -p $(OBJ_SRC_DIR)
+	mkdir -p $(OBJ_TEST_DIR)
+	mkdir -p $(LIB_DIR)
 
-main.o : $(MAIN_DIR)/main.c
-	$(CC) -I src -c $(FLAGS) -o $(OBJ_SRC_DIR)/$@ $<
+$(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(OBJ_SRC_DIR)/interface.o
+	$(CC) $(FLAGS) $^ -o $@
 
-computerlib.o : $(COMPLIB_DIR)/computerlib.c
-	$(CC) -I src -c $(FLAGS) -o $(OBJ_SRC_DIR)/$@ $<
+$(LIB_COMPUTER_PATH) : $(OBJ_SRC_DIR)/computerlib.o
+	ar rc $@ $^
 
-run: $(EXE_DIR)/app
-	$(EXE_DIR)/app
+$(LIB_TERM_PATH) : $(OBJ_SRC_DIR)/myTerm.o
+	ar rc $@ $^
+
+$(OBJ_SRC_DIR)/main.o : $(MAIN_DIR)/main.c
+	$(CC) -I src -c $(FLAGS) -o $@ $<
+
+$(OBJ_SRC_DIR)/interface.o : $(MAIN_DIR)/interface.c
+	$(CC) -I src -c $(FLAGS) -o $@ $<
+
+$(OBJ_SRC_DIR)/computerlib.o : $(COMPLIB_DIR)/computerlib.c
+	$(CC) -I src -c $(FLAGS) -o $@ $<
+
+$(OBJ_SRC_DIR)/myTerm.o : $(TERM_DIR)/myTerm.c
+	$(CC) -I src -c $(FLAGS) -o $@ $<
+
+run: $(APP_PATH)
+	$(APP_PATH)
 
 # TEST
 
-.PHONY: all test
+.PHONY: test
 
-test: all test.o main_test.o test_app 
+test: $(TEST_PATH)
 
-test_app: $(OBJ_TEST_DIR)/test.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o libmySimpleComputer.a
-	$(CC) $(FLAGS) -L. -lmySimpleComputer -o $(EXE_DIR)/$@ $^
+$(TEST_PATH) : $(OBJ_TEST_DIR)/test.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH)
+	$(CC) $(FLAGS) $^ -o $@
 
-main_test.o: $(TEST_DIR)/main.c
-	$(CC) $(FLAGS) -I thirdparty -I src -c -o $(OBJ_TEST_DIR)/$@ $<
+$(OBJ_TEST_DIR)/main_test.o : $(TEST_DIR)/main.c
+	$(CC) $(FLAGS) -I thirdparty -I src -c -o $@ $<
 
-test.o: $(TEST_DIR)/tests.c
-	$(CC) $(FLAGS) -I thirdparty -I src -c -o $(OBJ_TEST_DIR)/$@ $<
+$(OBJ_TEST_DIR)/test.o : $(TEST_DIR)/tests.c
+	$(CC) $(FLAGS) -I thirdparty -I src -c -o $@ $<
 
-test_run: $(EXE_DIR)/test_app
-	$(EXE_DIR)/test_app
+test_run: $(TEST_PATH)
+	$(TEST_PATH)
 
+.PHONY: clean
 
 clean:
-	rm -rf obj/src/* bin/* 
+	rm -rf obj bin lib
