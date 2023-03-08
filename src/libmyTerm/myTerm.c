@@ -13,18 +13,7 @@
 int
 mt_clrscr ()
 {
-  int term = open (TERM_PATH, O_WRONLY);
-
-  if (term == -1 || isatty(0) == 0 || isatty(1) == 0)
-    {
-      close(term);
-      fprintf(stderr, "Поток вывода не связан с терминалом\n");
-      //close (term);
-      return -1;
-    }
-
-  write (term, "\E[H\E[J", sizeof ("\E[H\E[J"));
-  close (term);
+  write (1, "\E[H\E[J", sizeof ("\E[H\E[J"));
 
   return 0;
 }
@@ -44,13 +33,8 @@ mt_gotoXY (int x, int y)
   char buff[30];
   sprintf (buff, "\E[%d;%dH", y, x);
 
-  int term = open (TERM_PATH, O_WRONLY);
-  if (term == -1 || isatty(0) == 0 || isatty(1) == 0)
-    {
-      return -1;
-    }
-  write (term, buff, strlen (buff));
-  close (term);
+  write (1, buff, strlen (buff));
+
   return 0;
 }
 
@@ -77,21 +61,11 @@ mt_getscreensize (int *rows, int *cols)
 int
 mt_setfgcolor (enum Colors color)
 {
-  int term = open (TERM_PATH, O_WRONLY);
-
-  if (term == -1 || isatty(0) == 0 || isatty(1) == 0)
-    {
-      close (term);
-      return -1;
-    }
-
   char buff[30];
 
   sprintf (buff, "\E[3%dm", color);
 
-  write (term, buff, strlen (buff));
-
-  close (term);
+  write (1, buff, strlen (buff));
 
   return 0;
 }
@@ -101,21 +75,11 @@ mt_setfgcolor (enum Colors color)
 int
 mt_setbgcolor (enum Colors color)
 {
-  int term = open (TERM_PATH, O_WRONLY);
-
-  if (term == -1 || isatty(0) == 0 || isatty(1) == 0)
-    {
-      close (term);
-      return -1;
-    }
-
   char buff[30];
 
   sprintf (buff, "\E[4%dm", color);
 
-  write (term, buff, strlen (buff));
-
-  close (term);
+  write (1, buff, strlen (buff));
 
   return 0;
 }

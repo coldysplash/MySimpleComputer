@@ -1,4 +1,3 @@
-#include <fcntl.h>
 #include <libcomputer/computerlib.h>
 #include <libmyTerm/myTerm.h>
 #include <stdio.h>
@@ -6,19 +5,10 @@
 #include <string.h>
 #include <unistd.h>
 
-#define TERM_PATH "/dev/tty"
-
 int
 show_interface ()
 {
-
   char buff[10];
-  int term = open (TERM_PATH, O_WRONLY);
-  if (term == -1 || isatty(0) == 0 || isatty(1) == 0)
-    {
-      close (term);
-      return -1;
-    }
   int *value = malloc (sizeof (int));
   int check_plus;
   int x1 = 2, y1 = 2;
@@ -38,44 +28,43 @@ show_interface ()
             {
               sprintf (buff, "%s%04X ", "-", *value);
             }
-          write (term, buff, strlen (buff));
+          write (1, buff, strlen (buff));
         }
     }
 
   mt_gotoXY (70, 2);
-  write (term, "accumulator", sizeof ("accumulator"));
+  write (1, "accumulator", sizeof ("accumulator"));
   mt_gotoXY (73, 3);
-  write (term, "+9999", sizeof ("+9999"));
+  write (1, "+9999", sizeof ("+9999"));
   mt_gotoXY (70, 4);
-  write (term, "instructionCounter", sizeof ("instructionCounter"));
+  write (1, "instructionCounter", sizeof ("instructionCounter"));
   mt_gotoXY (73, 5);
-  write (term, "+0000", sizeof ("+0000"));
+  write (1, "+0000", sizeof ("+0000"));
   mt_gotoXY (70, 6);
-  write (term, "Operation", sizeof ("Operation"));
+  write (1, "Operation", sizeof ("Operation"));
   mt_gotoXY (73, 7);
-  write (term, "+00 : 00", sizeof ("+00 : 00"));
+  write (1, "+00 : 00", sizeof ("+00 : 00"));
   mt_gotoXY (70, 8);
-  write (term, "Flags", sizeof ("Flags"));
+  write (1, "Flags", sizeof ("Flags"));
   mt_gotoXY (73, 9);
-  write (term, "O E V M", sizeof ("O E V M"));
+  write (1, "O E V M", sizeof ("O E V M"));
   mt_gotoXY (50, 12);
-  write (term, "Keys:", sizeof ("Keys:"));
+  write (1, "Keys:", sizeof ("Keys:"));
   mt_gotoXY (48, 13);
-  write (term, "l - load", sizeof ("l - load"));
+  write (1, "l - load", sizeof ("l - load"));
   mt_gotoXY (48, 14);
-  write (term, "s - save", sizeof ("s - save"));
+  write (1, "s - save", sizeof ("s - save"));
   mt_gotoXY (48, 15);
-  write (term, "r - run", sizeof ("r - run"));
+  write (1, "r - run", sizeof ("r - run"));
   mt_gotoXY (48, 16);
-  write (term, "t - step", sizeof ("t - step"));
+  write (1, "t - step", sizeof ("t - step"));
   mt_gotoXY (48, 17);
-  write (term, "i - reset", sizeof ("i - reset"));
+  write (1, "i - reset", sizeof ("i - reset"));
   mt_gotoXY (48, 18);
-  write (term, "F5 - accumulator", sizeof ("F5 - accumulator"));
+  write (1, "F5 - accumulator", sizeof ("F5 - accumulator"));
   mt_gotoXY (48, 19);
-  write (term, "F6 - instructionCounter", sizeof ("F6 - instructionCounter"));
+  write (1, "F6 - instructionCounter", sizeof ("F6 - instructionCounter"));
   printf ("\n");
 
-  close (term);
   return 0;
 }
