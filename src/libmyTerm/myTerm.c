@@ -29,7 +29,7 @@ mt_gotoXY (int x, int y)
     }
 
   char buff[30];
-  sprintf (buff, "\E[%d;%dH", y, x);
+  sprintf (buff, "\E[%d;%dH", x, y);
 
   write (1, buff, strlen (buff));
 

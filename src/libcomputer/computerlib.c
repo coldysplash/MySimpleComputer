@@ -157,7 +157,7 @@ sc_commandEncode (int command, int operand, int *value)
 
 // sc_commandDecode - декодирует значение как команду Simple Computer.
 int
-sc_commadDecode (int value, int *command, int *operand)
+sc_commandDecode (int value, int *command, int *operand)
 {
   if (command == NULL || operand == NULL)
     {

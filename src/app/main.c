@@ -20,12 +20,18 @@ main ()
     }
 
   mt_clrscr ();
-  mt_setfgcolor (Red);
-  mt_setbgcolor (White);
+  mt_setfgcolor (White);
+  mt_setbgcolor (Black);
   sc_memoryInit ();
-  sc_memorySet (1, 555);
-  sc_memorySet (2, 10);
-  show_interface ();
+  sc_memorySet (10, 0x7FFF);
+  sc_memorySet (0, 1);
+  sc_memorySet (5, 4543);
+  sc_memorySet (50, 0777);
+  for(int i = 0; i < 100; i++){
+    print_cell(i);
+  }
+
+  mt_gotoXY (14, 1);
 
   close (term);
 
