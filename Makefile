@@ -10,6 +10,7 @@ OBJ_DIR = obj
 BIN_DIR = bin
 LIB_DIR = lib
 
+BC_DIR = $(SRC_DIR)/libmyBigChars
 COMPLIB_DIR = $(SRC_DIR)/libcomputer
 TERM_DIR = $(SRC_DIR)/libmyTerm
 MAIN_DIR = $(SRC_DIR)/app
@@ -21,6 +22,7 @@ APP_PATH = $(BIN_DIR)/$(APP_NAME)
 TEST_PATH = $(BIN_DIR)/$(TEST_NAME)
 LIB_COMPUTER_PATH = $(LIB_DIR)/libmySimpleComputer.a
 LIB_TERM_PATH = $(LIB_DIR)/libmyTerm.a
+LIB_BC_PATH = $(LIB_DIR)/libmyBigChars.a
 
 .PHONY: all mkdir
 
@@ -33,13 +35,16 @@ mkdir:
 	mkdir -p $(OBJ_TEST_DIR)
 	mkdir -p $(LIB_DIR)
 
-$(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(OBJ_SRC_DIR)/interface.o
+$(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(OBJ_SRC_DIR)/interface.o
 	$(CC) $(FLAGS) $^ -o $@
 
 $(LIB_COMPUTER_PATH) : $(OBJ_SRC_DIR)/computerlib.o
 	ar rc $@ $^
 
 $(LIB_TERM_PATH) : $(OBJ_SRC_DIR)/myTerm.o
+	ar rc $@ $^
+
+$(LIB_BC_PATH) : $(OBJ_SRC_DIR)/myBigChars.o
 	ar rc $@ $^
 
 $(OBJ_SRC_DIR)/main.o : $(MAIN_DIR)/main.c
@@ -52,6 +57,9 @@ $(OBJ_SRC_DIR)/computerlib.o : $(COMPLIB_DIR)/computerlib.c
 	$(CC) -I src -c $(FLAGS) -o $@ $<
 
 $(OBJ_SRC_DIR)/myTerm.o : $(TERM_DIR)/myTerm.c
+	$(CC) -I src -c $(FLAGS) -o $@ $<
+
+$(OBJ_SRC_DIR)/myBigChars.o : $(BC_DIR)/myBigChars.c
 	$(CC) -I src -c $(FLAGS) -o $@ $<
 
 run: $(APP_PATH)

@@ -2,6 +2,7 @@
 #include <fcntl.h>
 #include <libcomputer/computerlib.h>
 #include <libmyTerm/myTerm.h>
+#include <libmyBigChars/myBigChars.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -32,6 +33,7 @@ main ()
   }
 
   mt_gotoXY (14, 1);
+  bc_printA("a");
 
   close (term);
 
