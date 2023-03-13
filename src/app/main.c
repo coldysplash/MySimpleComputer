@@ -33,8 +33,8 @@ main ()
       print_cell (i);
     }
 
+  bc_box(1,1,13,65);
   mt_gotoXY (14, 1);
-  bc_printA ("a");
 
   close (term);
 
