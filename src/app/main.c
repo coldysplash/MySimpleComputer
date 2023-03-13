@@ -1,8 +1,8 @@
 #include <app/interface.h>
 #include <fcntl.h>
 #include <libcomputer/computerlib.h>
-#include <libmyTerm/myTerm.h>
 #include <libmyBigChars/myBigChars.h>
+#include <libmyTerm/myTerm.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -28,12 +28,13 @@ main ()
   sc_memorySet (0, 1);
   sc_memorySet (5, 4543);
   sc_memorySet (50, 0777);
-  for(int i = 0; i < 100; i++){
-    print_cell(i);
-  }
+  for (int i = 0; i < 100; i++)
+    {
+      print_cell (i);
+    }
 
   mt_gotoXY (14, 1);
-  bc_printA("a");
+  bc_printA ("a");
 
   close (term);
 

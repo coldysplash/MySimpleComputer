@@ -1,3 +1,3 @@
 #pragma once
 
-int bc_printA(char * str);
+int bc_printA (char *str);
