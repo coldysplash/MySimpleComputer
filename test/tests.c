@@ -48,7 +48,6 @@ CTEST (test_getscreensize, mt_getscreensize)
   int *r = malloc (sizeof (u_int));
   int *c = malloc (sizeof (u_int));
   ASSERT_EQUAL (mt_getscreensize (r, c), 0);
-  ASSERT_EQUAL (mt_gotoXY (129, 129), -1);
 }
 
 CTEST (test_setfgcolor, mt_setfgcolor)

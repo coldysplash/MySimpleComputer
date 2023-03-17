@@ -80,7 +80,7 @@ $(OBJ_TEST_DIR)/main_test.o : $(TEST_DIR)/main.c
 $(OBJ_TEST_DIR)/test.o : $(TEST_DIR)/tests.c
 	$(CC) $(FLAGS) -I thirdparty -I src -c -o $@ $<
 
-test_run: $(TEST_PATH)
+testrun: $(TEST_PATH)
 	$(TEST_PATH)
 
 .PHONY: clean
