@@ -28,14 +28,21 @@ main ()
   sc_memorySet (0, 1);
   sc_memorySet (5, 4543);
   sc_memorySet (50, 0777);
+  // print memory
   for (int i = 0; i < 100; i++)
     {
       print_cell (i);
     }
 
-  bc_box(1,1,13,65);
-  mt_gotoXY (14, 1);
+  print_bc_box_memory ();
+  print_accumulator ();
+  print_instructionCounter ();
+  print_operation ();
+  print_flags ();
+  print_BigChars ();
+  print_Keys ();
 
+  mt_gotoXY (25, 1);
   close (term);
 
   return 0;

@@ -20,10 +20,8 @@ mt_clrscr ()
 int
 mt_gotoXY (int x, int y)
 {
-  int row, col;
-  mt_getscreensize (&row, &col);
 
-  if (((x > col) || (x < 0)) || ((y > row) || (y < 0)))
+  if ((x < 0) || (y < 0))
     {
       return -1;
     }

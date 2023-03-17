@@ -1,4 +1,5 @@
 #include <libcomputer/computerlib.h>
+#include <libmyBigChars/myBigChars.h>
 #include <libmyTerm/myTerm.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,4 +24,84 @@ print_cell (int address)
   write (1, buff, 6);
 
   return 0;
+}
+
+void
+print_bc_box_memory ()
+{
+
+  bc_box (1, 1, 12, 62);
+  mt_gotoXY (1, 27);
+  write (1, " Memory ", 9);
+}
+
+void
+print_accumulator ()
+{
+
+  bc_box (1, 64, 3, 88);
+  mt_gotoXY (1, 70);
+  write (1, " accumulator ", 14);
+}
+
+void
+print_instructionCounter ()
+{
+
+  bc_box (4, 64, 6, 88);
+  mt_gotoXY (4, 66);
+  write (1, " instructionCounter ", 21);
+}
+
+void
+print_operation ()
+{
+
+  bc_box (7, 64, 9, 88);
+  mt_gotoXY (7, 71);
+  write (1, " operation ", 12);
+}
+
+void
+print_flags ()
+{
+
+  bc_box (10, 64, 12, 88);
+  mt_gotoXY (10, 71);
+  write (1, " Flags ", 8);
+}
+
+void
+print_BigChars ()
+{
+  bc_box (13, 1, 23, 47);
+}
+
+void
+print_Keys ()
+{
+  bc_box (13, 48, 23, 88);
+
+  mt_gotoXY (13, 50);
+  write (1, " Keys: ", 8);
+
+  mt_gotoXY (15, 49);
+  write (1, " l - load ", 11);
+
+  mt_gotoXY (16, 49);
+  write (1, " s - save ", 11);
+
+  mt_gotoXY (17, 49);
+  write (1, " r - run ", 10);
+
+  mt_gotoXY (18, 49);
+  write (1, " t - step ", 11);
+  mt_gotoXY (19, 49);
+  write (1, " i - reset ", 12);
+
+  mt_gotoXY (20, 49);
+  write (1, " F5 - accumulator ", 19);
+
+  mt_gotoXY (21, 49);
+  write (1, " F6 - instructionCounter ", 26);
 }
