@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <libmyBigChars/myBigChars.h>
 
 // acs chars
 #define CKBOARD ("a")  // ▒
@@ -59,6 +60,42 @@ bc_box (int x1, int y1, int x2, int y2)
 
   mt_gotoXY (x2, y1);
   bc_printA (LDCORNER);
+
+  return 0;
+}
+
+
+int bc_printbigchar (int bigchar[], int x, int y, enum Colors frontcolor, enum Colors backcolor) {
+
+  mt_setfgcolor(frontcolor);
+  mt_setbgcolor(backcolor);
+  mt_gotoXY(x, y);
+
+  for(int i = 0; i < 4; i++){
+    int value = (bigchar[0] >> (i * 8)) & 0xff;
+    for(int j = 0; j < 8; j++){
+      mt_gotoXY(x + i, y + j);
+      int ch = (value >> j) & 0x00000001;
+      if(ch == 1){
+        bc_printA(CKBOARD);
+      }else{
+        write(1, " ", 2);
+      }
+    }
+  }
+
+  for(int i = 0; i < 4; i++){
+    int value = (bigchar[1] >> (i * 8)) & 0xff;
+    for(int j = 0; j < 8; j++){
+      mt_gotoXY(x + 4 + i, y + j);
+      int ch = (value >> j) & 0x00000001;
+      if(ch == 1){
+        bc_printA(CKBOARD);
+      }else{
+        write(1, " ", 2);
+      }
+    }
+  }
 
   return 0;
 }

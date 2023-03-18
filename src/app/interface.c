@@ -6,6 +6,25 @@
 #include <string.h>
 #include <unistd.h>
 
+int bc_PLUS[2] = {0xFF181818, 0x181818FF};
+int bc_MINUS[2] = {0xFF000000, 0x000000FF};
+int bc_NULL[2] = {0x8181817e, 0x7e818181};
+int bc_ONE[2] = {0x8890A0C0, 0x80808080};
+int bc_TWO[2] = {0x2040827C, 0xFE040810};
+int bc_THREE[2] = {0x6080817E, 0x7E818060};
+int bc_FOUR[2] = { 0xFF818181, 0x80808080};
+int bc_FIVE[2] = {0x7F0101FF, 0x7F808080};
+int bc_SIX[2] = {0x0101817E, 0x7E81817F};
+int bc_SEVEN[2] = {0x204080FE, 0x02040810};
+int bc_EIGHT[2] = {0x7E81817E,  0x7E818181};
+int bc_NINE[2] = { 0x7E81817E, 0x7E808080};
+int bc_A[2] = {0x7E42423C,  0x42424242};
+int bc_B[2] = {0x3E42423E,  0x3E424242};
+int bc_C[2] = {0x0101017E, 0x7E010101};
+int bc_D[2] = {0x4242221E,  0x1E224242};
+int bc_E[2] = {0x7E02027E, 0x7E020202};
+int bc_F[2] = {0x7E02027E, 0x02020202};
+
 int
 print_cell (int address)
 {
@@ -75,6 +94,7 @@ void
 print_BigChars ()
 {
   bc_box (13, 1, 23, 47);
+  bc_printbigchar (bc_MINUS, 15, 24, White, Black);
 }
 
 void
