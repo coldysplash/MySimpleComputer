@@ -94,7 +94,8 @@ void
 print_BigChars ()
 {
   bc_box (13, 1, 23, 47);
-  bc_printbigchar (bc_MINUS, 15, 24, White, Black);
+  bc_printbigchar (bc_NINE, 15, 24, White, Black);
+  bc_setbigcharpos (&bc_NINE[2], 0, 5, 0);
 }
 
 void

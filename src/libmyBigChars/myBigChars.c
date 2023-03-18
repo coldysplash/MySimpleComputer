@@ -67,9 +67,9 @@ bc_box (int x1, int y1, int x2, int y2)
 
 int bc_printbigchar (int bigchar[], int x, int y, enum Colors frontcolor, enum Colors backcolor) {
 
-  mt_setfgcolor(frontcolor);
-  mt_setbgcolor(backcolor);
-  mt_gotoXY(x, y);
+  if (mt_setfgcolor(frontcolor) == -1 || mt_setbgcolor(backcolor) == -1 || mt_gotoXY(x, y) == -1){
+    return -1;
+  }
 
   for(int i = 0; i < 4; i++){
     int value = (bigchar[0] >> (i * 8)) & 0xff;
@@ -95,6 +95,23 @@ int bc_printbigchar (int bigchar[], int x, int y, enum Colors frontcolor, enum C
         write(1, " ", 2);
       }
     }
+  }
+
+  return 0;
+}
+
+int bc_setbigcharpos (int * big, int x, int y, int value){
+
+  if(big == NULL || x < 0 || y < 0 || x > 7 || y > 7 || value > 1 || value < 0){
+    return -1;
+  }
+
+  int bc_position = x < 4 ? 0 : 1;
+  printf("%d", bc_position);
+  if(value == 1){
+
+  }else{
+    
   }
 
   return 0;
