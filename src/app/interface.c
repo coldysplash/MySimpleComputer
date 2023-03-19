@@ -96,7 +96,11 @@ print_BigChars ()
   // int value;
   bc_box (13, 1, 23, 47);
   // bc_setbigcharpos (bc_NINE, 0, 6, 0);
-  bc_printbigchar (bc_NINE, 15, 24, White, Black);
+  bc_printbigchar (bc_PLUS, 15, 2, White, Black);
+  bc_printbigchar (bc_NULL, 15, 11, White, Black);
+  bc_printbigchar (bc_NULL, 15, 20, White, Black);
+  bc_printbigchar (bc_NULL, 15, 29, White, Black);
+  bc_printbigchar (bc_NULL, 15, 38, White, Black);
   // bc_getbigcharpos(bc_NINE, 2, 7, &value);
   // printf("%d", value);
 }

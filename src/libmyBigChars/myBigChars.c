@@ -18,10 +18,11 @@
 int
 bc_printA (char *str)
 {
-
   char buff[strlen (str)];
   sprintf (buff, "\E(0%s\E(B", str);
-  write (1, buff, strlen (buff));
+  if(write (1, buff, strlen (buff)) == -1){
+    return -1;
+  } 
 
   return 0;
 }
