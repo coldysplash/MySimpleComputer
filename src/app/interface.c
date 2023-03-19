@@ -93,9 +93,12 @@ print_flags ()
 void
 print_BigChars ()
 {
+  // int value;
   bc_box (13, 1, 23, 47);
-  bc_setbigcharpos (bc_NINE, 0, 6, 0);
+  // bc_setbigcharpos (bc_NINE, 0, 6, 0);
   bc_printbigchar (bc_NINE, 15, 24, White, Black);
+  // bc_getbigcharpos(bc_NINE, 2, 7, &value);
+  // printf("%d", value);
 }
 
 void
