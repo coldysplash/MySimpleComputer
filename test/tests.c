@@ -1,12 +1,12 @@
 #include <ctest.h>
 #include <libcomputer/computerlib.h>
-#include <libmyTerm/myTerm.h>
 #include <libmyBigChars/myBigChars.h>
+#include <libmyTerm/myTerm.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-//tests for lab1
+// tests for lab1
 #if 0
 
 CTEST (test_init, sc_memoryInit){
@@ -37,7 +37,7 @@ CTEST (test_memLoad, sc_memoryLoad){
 }
 #endif
 
-//tests for lab2
+// tests for lab2
 
 CTEST (test_clrscr, mt_clrscr) { ASSERT_EQUAL (mt_clrscr (), 0); }
 
@@ -64,9 +64,6 @@ CTEST (test_setbgcolor, mt_setbgcolor)
   ASSERT_EQUAL (mt_setbgcolor (White), 0);
 }
 
-//tests for lab3
+// tests for lab3
 
-CTEST (test_bc_printA, bc_printA)
-{
-  ASSERT_EQUAL (bc_printA("q"), 0);
-}
+CTEST (test_bc_printA, bc_printA) { ASSERT_EQUAL (bc_printA ("q"), 0); }

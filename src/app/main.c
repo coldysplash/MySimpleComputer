@@ -28,6 +28,9 @@ main ()
   sc_memorySet (0, 1);
   sc_memorySet (5, 4543);
   sc_memorySet (50, 0777);
+  sc_regInit ();
+  sc_regSet (FLAG_OVERFLOW, 1);
+  sc_regSet (FLAG_ERR_DIV_BY_ZERO, 1);
   // print memory
   for (int i = 0; i < 100; i++)
     {

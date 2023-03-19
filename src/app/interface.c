@@ -84,10 +84,30 @@ print_operation ()
 void
 print_flags ()
 {
-
   bc_box (10, 64, 12, 88);
   mt_gotoXY (10, 71);
   write (1, " Flags ", 8);
+
+  int value;
+  mt_gotoXY (11, 68);
+  sc_regGet (FLAG_OVERFLOW, &value);
+  write (1, ((value) ? "P" : ""), 1);
+
+  mt_gotoXY (11, 70);
+  sc_regGet (FLAG_ERR_DIV_BY_ZERO, &value);
+  write (1, ((value) ? "O" : ""), 1);
+
+  mt_gotoXY (11, 72);
+  sc_regGet (FLAG_WRONG_ADDRESS, &value);
+  write (1, ((value) ? "M" : ""), 1);
+
+  mt_gotoXY (11, 74);
+  sc_regGet (FLAG_IGNOR_TEXT_IMPULS, &value);
+  write (1, ((value) ? "T" : ""), 1);
+
+  mt_gotoXY (11, 76);
+  sc_regGet (FLAG_WRONG_COMMAND, &value);
+  write (1, ((value) ? "E" : ""), 1);
 }
 
 void
