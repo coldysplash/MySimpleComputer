@@ -100,16 +100,16 @@ int bc_printbigchar (int bigchar[], int x, int y, enum Colors frontcolor, enum C
   return 0;
 }
 
-int bc_setbigcharpos (int * big, int x, int y, int value){
+int bc_setbigcharpos (int big[], int x, int y, int value){
 
   if(big == NULL || x < 0 || y < 0 || x > 7 || y > 7 || value > 1 || value < 0){
     return -1;
   }
 
   int bc_position = x < 4 ? 0 : 1;
-  printf("%d", bc_position);
   if(value == 1){
-
+      int val = (big[bc_position] >> (x * 8)) & 0xff;
+      printf("%X", val);
   }else{
     
   }
