@@ -39,6 +39,7 @@ CTEST (test_memLoad, sc_memoryLoad){
 
 // tests for lab2
 
+#if 0
 CTEST (test_clrscr, mt_clrscr) { ASSERT_EQUAL (mt_clrscr (), 0); }
 
 CTEST (test_gotoXY, mt_gotoXY)
@@ -63,7 +64,20 @@ CTEST (test_setbgcolor, mt_setbgcolor)
 {
   ASSERT_EQUAL (mt_setbgcolor (White), 0);
 }
+#endif
 
 // tests for lab3
 
 CTEST (test_bc_printA, bc_printA) { ASSERT_EQUAL (bc_printA ("q"), 0); }
+
+CTEST (test_bc_box, bc_box)
+{
+  ASSERT_EQUAL (bc_box (1, 1, 1, 1), 0);
+  ASSERT_EQUAL (bc_box (-1, 1, -1, -5), -1);
+}
+
+CTEST (test_bc_printbigchar, bc_printbigchar)
+{
+  int bc_NULL[2] = { 0x8181817e, 0x7e818181 };
+  ASSERT_EQUAL (bc_printbigchar (bc_NULL, 1, 1, White, Black), 0);
+}

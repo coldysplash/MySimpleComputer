@@ -35,7 +35,7 @@ mkdir:
 	mkdir -p $(OBJ_TEST_DIR)
 	mkdir -p $(LIB_DIR)
 
-$(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/interface.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH)
+$(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(OBJ_SRC_DIR)/interface.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH)
 	$(CC) $(FLAGS) $^ -o $@
 
 $(LIB_COMPUTER_PATH) : $(OBJ_SRC_DIR)/computerlib.o
@@ -71,7 +71,7 @@ run: $(APP_PATH)
 
 test: $(TEST_PATH)
 
-$(TEST_PATH) : $(OBJ_TEST_DIR)/test.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH)
+$(TEST_PATH) : $(OBJ_TEST_DIR)/test.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH)
 	$(CC) $(FLAGS) $^ -o $@
 
 $(OBJ_TEST_DIR)/main_test.o : $(TEST_DIR)/main.c
