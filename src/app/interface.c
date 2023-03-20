@@ -62,7 +62,7 @@ print_accumulator ()
   mt_gotoXY (1, 70);
   write (1, " accumulator ", 14);
   mt_gotoXY (2, 74);
-  write(1, "+0000", 5);
+  write (1, "+0000", 5);
 }
 
 void
@@ -71,8 +71,8 @@ print_instructionCounter ()
   bc_box (4, 64, 6, 88);
   mt_gotoXY (4, 66);
   write (1, " instructionCounter ", 21);
-  mt_gotoXY(5, 72);
-  write(1, "0", 1);
+  mt_gotoXY (5, 72);
+  write (1, "0", 1);
 }
 
 void
@@ -84,7 +84,6 @@ print_operation ()
   write (1, " operation ", 12);
   mt_gotoXY (8, 70);
   write (1, " +00 : 00 ", 10);
-
 }
 
 void
