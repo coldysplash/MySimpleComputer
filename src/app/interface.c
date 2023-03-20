@@ -61,15 +61,18 @@ print_accumulator ()
   bc_box (1, 64, 3, 88);
   mt_gotoXY (1, 70);
   write (1, " accumulator ", 14);
+  mt_gotoXY (2, 74);
+  write(1, "+0000", 5);
 }
 
 void
 print_instructionCounter ()
 {
-
   bc_box (4, 64, 6, 88);
   mt_gotoXY (4, 66);
   write (1, " instructionCounter ", 21);
+  mt_gotoXY(5, 72);
+  write(1, "0", 1);
 }
 
 void
@@ -79,6 +82,9 @@ print_operation ()
   bc_box (7, 64, 9, 88);
   mt_gotoXY (7, 71);
   write (1, " operation ", 12);
+  mt_gotoXY (8, 70);
+  write (1, " +00 : 00 ", 10);
+
 }
 
 void
@@ -115,12 +121,12 @@ print_BigChars ()
 {
   // int value;
   bc_box (13, 1, 23, 47);
-  // bc_setbigcharpos (bc_NINE, 0, 6, 0);
+  bc_setbigcharpos (bc_PLUS, 0, 6, 0);
   bc_printbigchar (bc_PLUS, 15, 2, White, Black);
   bc_printbigchar (bc_NULL, 15, 11, White, Black);
   bc_printbigchar (bc_NULL, 15, 20, White, Black);
   bc_printbigchar (bc_NULL, 15, 29, White, Black);
-  bc_printbigchar (bc_NULL, 15, 38, White, Black);
+  bc_printbigchar (bc_ONE, 15, 38, White, Black);
   // bc_getbigcharpos(bc_NINE, 2, 7, &value);
   // printf("%d", value);
 }

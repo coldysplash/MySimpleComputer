@@ -117,7 +117,7 @@ bc_printbigchar (int bigchar[], int x, int y, enum Colors frontcolor,
 }
 
 int
-bc_setbigcharpos (int big[], int x, int y, int value)
+bc_setbigcharpos (int * big, int x, int y, int value)
 {
 
   if (big == NULL || x < 0 || y < 0 || x > 7 || y > 7 || value > 1
@@ -142,7 +142,7 @@ bc_setbigcharpos (int big[], int x, int y, int value)
 }
 
 int
-bc_getbigcharpos (int big[], int x, int y, int *value)
+bc_getbigcharpos (int * big, int x, int y, int *value)
 {
   if (big == NULL || value == NULL || x < 0 || y < 0 || x > 7 || y > 7)
     {
@@ -158,7 +158,7 @@ bc_getbigcharpos (int big[], int x, int y, int *value)
 }
 
 int
-bc_bigcharwrite (int fd, int big[], int count)
+bc_bigcharwrite (int fd, int * big, int count)
 {
   if (big == NULL || count < 1)
     {
@@ -172,7 +172,7 @@ bc_bigcharwrite (int fd, int big[], int count)
 }
 
 int
-bc_bigcharread (int fd, int big[], int need_count, int *count)
+bc_bigcharread (int fd, int * big, int need_count, int *count)
 {
   if (big == NULL || need_count < 1 || count == NULL)
     {
