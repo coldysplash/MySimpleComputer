@@ -24,13 +24,12 @@ main ()
   mt_setfgcolor (White);
   mt_setbgcolor (Black);
   sc_memoryInit ();
-  sc_memorySet (10, 0x7FFF);
-  sc_memorySet (0, 1);
+  sc_memorySet (0, 0x7FFF);
+  //sc_memorySet (0, 1);
   sc_memorySet (5, 4543);
   sc_memorySet (50, 0777);
   sc_regInit ();
   sc_regSet (FLAG_OVERFLOW, 1);
-  sc_regSet (FLAG_ERR_DIV_BY_ZERO, 1);
   // print memory
   for (int i = 0; i < 100; i++)
     {
@@ -40,7 +39,7 @@ main ()
   print_bc_box_memory ();
   print_accumulator ();
   print_instructionCounter ();
-  print_operation ();
+  print_operation (print_instructionCounter ());
   print_flags ();
   print_BigChars ();
   print_Keys ();

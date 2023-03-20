@@ -65,25 +65,41 @@ print_accumulator ()
   write (1, "+0000", 5);
 }
 
-void
+int
 print_instructionCounter ()
 {
+  char buff[7];
+  int instructionCounter = 0;
+  snprintf (buff, 6, "+%04X", instructionCounter);
   bc_box (4, 64, 6, 88);
   mt_gotoXY (4, 66);
   write (1, " instructionCounter ", 21);
   mt_gotoXY (5, 72);
-  write (1, "0", 1);
+  write (1, buff, 6);
+
+  return instructionCounter;
 }
 
-void
-print_operation ()
+int
+print_operation (int address)
 {
+  char buff[9];
+  int value, command, operand;
+
+  if (sc_memoryGet (address, &value) < 0
+      || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
+    return -1;
+
+  snprintf (buff, 9, "%c%02X : %02X", (value & 0x4000) ? '-' : '+', command,
+            operand);
 
   bc_box (7, 64, 9, 88);
   mt_gotoXY (7, 71);
   write (1, " operation ", 12);
   mt_gotoXY (8, 70);
-  write (1, " +00 : 00 ", 10);
+  write(1, buff, 9);
+
+  return 0;
 }
 
 void
