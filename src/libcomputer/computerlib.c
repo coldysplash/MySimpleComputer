@@ -123,9 +123,7 @@ sc_regGet (int reg, int *value)
       return -1;
     }
 
-  flag_reg = (flag_reg >> (reg - 1)) & 0x1;
-
-  *value = flag_reg;
+  *value = (flag_reg >> (reg - 1)) & 0x1;
 
   return 0;
 }

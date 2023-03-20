@@ -21,6 +21,15 @@ CTEST (test_memSet, test_memGet){
     sc_memoryGet(28, &value);
 }
 
+CTEST(test_sc_regGet, sc_regGet){
+    sc_regInit();
+    int value;
+    ASSERT_EQUAL(sc_regSet(FLAG_WRONG_COMMAND, 1), 0);
+    ASSERT_EQUAL(sc_regGet(FLAG_WRONG_COMMAND, &value), 0);
+    printf("%d", value);
+
+}
+
 CTEST (test_memSave, sc_memorySave){
     sc_memoryInit();
     sc_memorySet(10, 555);
@@ -68,6 +77,7 @@ CTEST (test_setbgcolor, mt_setbgcolor)
 
 // tests for lab3
 
+#if 1
 CTEST (test_bc_printA, bc_printA) { ASSERT_EQUAL (bc_printA ("q"), 0); }
 
 CTEST (test_bc_box, bc_box)
@@ -81,3 +91,4 @@ CTEST (test_bc_printbigchar, bc_printbigchar)
   int bc_NULL[2] = { 0x8181817e, 0x7e818181 };
   ASSERT_EQUAL (bc_printbigchar (bc_NULL, 1, 1, White, Black), 0);
 }
+#endif

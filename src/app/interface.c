@@ -90,7 +90,12 @@ print_operation (int address)
       || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
     return -1;
 
-  snprintf (buff, 9, "%c%02X : %02X", (value & 0x4000) ? '-' : '+', command,
+  if((value & 0x4000)){
+	command = 0;
+	operand = 0;
+	sc_regSet(FLAG_WRONG_COMMAND, 1);
+  }
+  snprintf (buff, 9, "%c%02X : %02X", '+', command,
             operand);
 
   bc_box (7, 64, 9, 88);
@@ -110,40 +115,23 @@ print_flags ()
   write (1, " Flags ", 8);
 
   int value;
-  mt_gotoXY (11, 68);
-  sc_regGet (FLAG_OVERFLOW, &value);
-  write (1, ((value) ? "P" : ""), 1);
-
-  mt_gotoXY (11, 70);
-  sc_regGet (FLAG_ERR_DIV_BY_ZERO, &value);
-  write (1, ((value) ? "O" : ""), 1);
-
-  mt_gotoXY (11, 72);
-  sc_regGet (FLAG_WRONG_ADDRESS, &value);
-  write (1, ((value) ? "M" : ""), 1);
-
-  mt_gotoXY (11, 74);
-  sc_regGet (FLAG_IGNOR_TEXT_IMPULS, &value);
-  write (1, ((value) ? "T" : ""), 1);
 
   mt_gotoXY (11, 76);
   sc_regGet (FLAG_WRONG_COMMAND, &value);
+  printf("%d", value);
   write (1, ((value) ? "E" : ""), 1);
 }
 
 void
 print_BigChars ()
 {
-  // int value;
   bc_box (13, 1, 23, 47);
-  bc_setbigcharpos (bc_PLUS, 0, 6, 0);
+  //bc_setbigcharpos (bc_PLUS, 0, 6, 0);
   bc_printbigchar (bc_PLUS, 15, 2, White, Black);
   bc_printbigchar (bc_NULL, 15, 11, White, Black);
   bc_printbigchar (bc_NULL, 15, 20, White, Black);
   bc_printbigchar (bc_NULL, 15, 29, White, Black);
   bc_printbigchar (bc_ONE, 15, 38, White, Black);
-  // bc_getbigcharpos(bc_NINE, 2, 7, &value);
-  // printf("%d", value);
 }
 
 void
