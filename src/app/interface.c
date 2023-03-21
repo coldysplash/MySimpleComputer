@@ -69,7 +69,7 @@ int
 print_instructionCounter ()
 {
   char buff[7];
-  int instructionCounter = 0;
+  int instructionCounter = 1;
   snprintf (buff, 6, "+%04X", instructionCounter);
   bc_box (4, 64, 6, 88);
   mt_gotoXY (4, 66);
@@ -90,19 +90,19 @@ print_operation (int address)
       || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
     return -1;
 
-  if((value & 0x4000)){
-	command = 0;
-	operand = 0;
-	sc_regSet(FLAG_WRONG_COMMAND, 1);
-  }
-  snprintf (buff, 9, "%c%02X : %02X", '+', command,
-            operand);
+  if ((value & 0x4000))
+    {
+      command = 0;
+      operand = 0;
+      sc_regSet (FLAG_WRONG_COMMAND, 1);
+    }
+  snprintf (buff, 9, "%c%02X : %02X", '+', command, operand);
 
   bc_box (7, 64, 9, 88);
   mt_gotoXY (7, 71);
   write (1, " operation ", 12);
   mt_gotoXY (8, 70);
-  write(1, buff, 9);
+  write (1, buff, 9);
 
   return 0;
 }
@@ -118,7 +118,7 @@ print_flags ()
 
   mt_gotoXY (11, 76);
   sc_regGet (FLAG_WRONG_COMMAND, &value);
-  printf("%d", value);
+  printf ("%d", value);
   write (1, ((value) ? "E" : ""), 1);
 }
 
@@ -126,7 +126,7 @@ void
 print_BigChars ()
 {
   bc_box (13, 1, 23, 47);
-  //bc_setbigcharpos (bc_PLUS, 0, 6, 0);
+  // bc_setbigcharpos (bc_PLUS, 0, 6, 0);
   bc_printbigchar (bc_PLUS, 15, 2, White, Black);
   bc_printbigchar (bc_NULL, 15, 11, White, Black);
   bc_printbigchar (bc_NULL, 15, 20, White, Black);

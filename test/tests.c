@@ -89,6 +89,6 @@ CTEST (test_bc_box, bc_box)
 CTEST (test_bc_printbigchar, bc_printbigchar)
 {
   int bc_NULL[2] = { 0x8181817e, 0x7e818181 };
-  ASSERT_EQUAL (bc_printbigchar (bc_NULL, 1, 1, White, Black), 0);
+  ASSERT_EQUAL (bc_printbigchar (bc_NULL, 10, 70, White, Black), 0);
 }
 #endif
