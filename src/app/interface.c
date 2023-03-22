@@ -6,10 +6,6 @@
 #include <string.h>
 #include <unistd.h>
 
-// struct bc_CHARS {
-//   bc_NUM[2];
-// }bc_CHARS[17];
-
 int bc_PLUS[2] = { 0xFF181818, 0x181818FF };
 int bc_MINUS[2] = { 0xFF000000, 0x000000FF };
 int bc_NULL[2] = { 0x8181817e, 0x7e818181 };
@@ -28,6 +24,10 @@ int bc_C[2] = { 0x0101017E, 0x7E010101 };
 int bc_D[2] = { 0x4242221E, 0x1E224242 };
 int bc_E[2] = { 0x7E02027E, 0x7E020202 };
 int bc_F[2] = { 0x7E02027E, 0x02020202 };
+
+int *bc_NUMS[16] = { bc_NULL, bc_ONE,   bc_TWO,   bc_THREE, bc_FOUR, bc_FIVE,
+                     bc_SIX,  bc_SEVEN, bc_EIGHT, bc_NINE,  bc_A,    bc_B,
+                     bc_C,    bc_D,     bc_E,     bc_F };
 
 int
 print_cell (int address)
@@ -73,7 +73,7 @@ int
 print_instructionCounter ()
 {
   char buff[7];
-  int instructionCounter = 0;
+  int instructionCounter = 50;
   snprintf (buff, 6, "+%04X", instructionCounter);
   bc_box (4, 64, 6, 88);
   mt_gotoXY (4, 66);
@@ -120,24 +120,46 @@ print_flags ()
 
   int value;
 
+  mt_gotoXY (11, 70);
+  sc_regGet (FLAG_OVERFLOW, &value);
+  write (1, ((value) ? "P" : ""), 1);
+
+  mt_gotoXY (11, 73);
+  sc_regGet (FLAG_ERR_DIV_BY_ZERO, &value);
+  write (1, ((value) ? "O" : ""), 1);
+
   mt_gotoXY (11, 76);
+  sc_regGet (FLAG_WRONG_ADDRESS, &value);
+  write (1, ((value) ? "M" : ""), 1);
+
+  mt_gotoXY (11, 79);
+  sc_regGet (FLAG_IGNOR_TEXT_IMPULS, &value);
+  write (1, ((value) ? "T" : ""), 1);
+
+  mt_gotoXY (11, 82);
   sc_regGet (FLAG_WRONG_COMMAND, &value);
   write (1, ((value) ? "E" : ""), 1);
 }
 
-int 
+int
 print_BigChars (int address)
 {
   bc_box (13, 1, 23, 47);
-  
-  //char buff[9];
+
   int value, command, operand;
 
   if (sc_memoryGet (address, &value) < 0
       || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
-    return -1; 
+    return -1;
 
-  (value & 0x4000) ? bc_printbigchar (bc_MINUS, 15, 2, White, Black) : bc_printbigchar (bc_PLUS, 15, 2, White, Black);
+  (value & 0x4000) ? bc_printbigchar (bc_MINUS, 15, 2, White, Black)
+                   : bc_printbigchar (bc_PLUS, 15, 2, White, Black);
+
+  bc_printbigchar (bc_NUMS[(command >> 4) % 16], 15, 11, White, Black);
+  bc_printbigchar (bc_NUMS[(command & 0xf) % 16], 15, 20, White, Black);
+  bc_printbigchar (bc_NUMS[(operand >> 4) & 0xf % 16], 15, 29, White, Black);
+  bc_printbigchar (bc_NUMS[(operand & 0xf) % 16], 15, 38, White, Black);
+
   return 0;
 }
 

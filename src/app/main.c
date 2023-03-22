@@ -33,8 +33,8 @@ main ()
     {
       print_cell (i);
     }
-
   print_bc_box_memory ();
+
   print_accumulator ();
   int address = print_instructionCounter ();
   print_operation (address);
