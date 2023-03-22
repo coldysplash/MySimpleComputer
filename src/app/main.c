@@ -26,7 +26,6 @@ main ()
   sc_memoryInit ();
   sc_regInit ();
   sc_memorySet (0, 0x7FFF);
-  // sc_memorySet (0, 1);
   sc_memorySet (5, 4543);
   sc_memorySet (50, 0777);
   // print memory
@@ -37,9 +36,10 @@ main ()
 
   print_bc_box_memory ();
   print_accumulator ();
-  print_operation (print_instructionCounter ());
+  int address = print_instructionCounter ();
+  print_operation (address);
   print_flags ();
-  print_BigChars ();
+  print_BigChars (address);
   print_Keys ();
 
   mt_gotoXY (25, 1);

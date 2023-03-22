@@ -6,5 +6,5 @@ void print_accumulator ();
 int print_instructionCounter ();
 int print_operation (int address);
 void print_flags ();
-void print_BigChars ();
+int print_BigChars (int address);
 void print_Keys ();

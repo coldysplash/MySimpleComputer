@@ -6,6 +6,10 @@
 #include <string.h>
 #include <unistd.h>
 
+// struct bc_CHARS {
+//   bc_NUM[2];
+// }bc_CHARS[17];
+
 int bc_PLUS[2] = { 0xFF181818, 0x181818FF };
 int bc_MINUS[2] = { 0xFF000000, 0x000000FF };
 int bc_NULL[2] = { 0x8181817e, 0x7e818181 };
@@ -69,7 +73,7 @@ int
 print_instructionCounter ()
 {
   char buff[7];
-  int instructionCounter = 1;
+  int instructionCounter = 0;
   snprintf (buff, 6, "+%04X", instructionCounter);
   bc_box (4, 64, 6, 88);
   mt_gotoXY (4, 66);
@@ -118,20 +122,23 @@ print_flags ()
 
   mt_gotoXY (11, 76);
   sc_regGet (FLAG_WRONG_COMMAND, &value);
-  printf ("%d", value);
   write (1, ((value) ? "E" : ""), 1);
 }
 
-void
-print_BigChars ()
+int 
+print_BigChars (int address)
 {
   bc_box (13, 1, 23, 47);
-  // bc_setbigcharpos (bc_PLUS, 0, 6, 0);
-  bc_printbigchar (bc_PLUS, 15, 2, White, Black);
-  bc_printbigchar (bc_NULL, 15, 11, White, Black);
-  bc_printbigchar (bc_NULL, 15, 20, White, Black);
-  bc_printbigchar (bc_NULL, 15, 29, White, Black);
-  bc_printbigchar (bc_ONE, 15, 38, White, Black);
+  
+  //char buff[9];
+  int value, command, operand;
+
+  if (sc_memoryGet (address, &value) < 0
+      || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
+    return -1; 
+
+  (value & 0x4000) ? bc_printbigchar (bc_MINUS, 15, 2, White, Black) : bc_printbigchar (bc_PLUS, 15, 2, White, Black);
+  return 0;
 }
 
 void
