@@ -83,7 +83,14 @@ $(OBJ_TEST_DIR)/test.o : $(TEST_DIR)/tests.c
 testrun: $(TEST_PATH)
 	$(TEST_PATH)
 
-.PHONY: clean
+.PHONY: clean 
 
 clean:
 	rm -rf obj bin lib
+
+.PHONY: rebuild
+
+rebuild:
+	rm -rf obj bin lib
+	make
+	make test
