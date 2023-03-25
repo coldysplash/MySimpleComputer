@@ -1,8 +1,5 @@
 #pragma once
 
-#define memorysize 100
-extern int sc_ram[memorysize]; // memory
-
 //Флаги
 #define FLAG_OVERFLOW 1 // переполнение при выполнении операции
 #define FLAG_ERR_DIV_BY_ZERO 2 // ошибка деления на ноль
@@ -20,4 +17,3 @@ int sc_regSet (int reg, int value);
 int sc_regGet (int reg, int *value);
 int sc_commandEncode (int command, int operand, int *value);
 int sc_commandDecode (int value, int *command, int *operand);
-void print_memory ();

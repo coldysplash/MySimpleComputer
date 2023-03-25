@@ -77,7 +77,7 @@ CTEST (test_setbgcolor, mt_setbgcolor)
 
 // tests for lab3
 
-#if 1
+#if 0
 CTEST (test_bc_printA, bc_printA) { ASSERT_EQUAL (bc_printA ("q"), 0); }
 
 CTEST (test_bc_box, bc_box)

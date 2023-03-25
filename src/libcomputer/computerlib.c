@@ -4,12 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define memorysize 100
 int sc_ram[memorysize]; // memory
 
-int sc_commands[] = {
-  10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43, 51, 52, 53, 54, 55, 56, 57,
-  58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76,
-};
+int sc_commands[] = { 10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43 };
 
 #define MASK_DECODE_COMMAND 0x7f
 static int flag_reg;
@@ -134,7 +132,7 @@ int
 sc_commandEncode (int command, int operand, int *value)
 {
   bool flag_command = false;
-  for (int i = 0; i < 38; i++)
+  for (int i = 0; i < 12; i++)
     {
       if (command == sc_commands[i])
         {
@@ -170,18 +168,4 @@ sc_commandDecode (int value, int *command, int *operand)
   *command = value;
 
   return 0;
-}
-
-void
-print_memory ()
-{
-  for (int i = 0; i < 100; i++)
-    {
-      if (i % 20 == 0 && i != 0)
-        {
-          printf ("\n");
-        }
-      printf ("%3d ", sc_ram[i]);
-    }
-  printf ("\n");
 }
