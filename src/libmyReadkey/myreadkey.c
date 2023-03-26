@@ -7,3 +7,7 @@
 #include <string.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+
+int rk_readkey (enum keys *){
+    
+}
