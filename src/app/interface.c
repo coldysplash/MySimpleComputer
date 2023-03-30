@@ -1,70 +1,193 @@
 #include <libcomputer/computerlib.h>
+#include <libmyBigChars/myBigChars.h>
 #include <libmyTerm/myTerm.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
+int bc_PLUS[2] = { 0xFF181818, 0x181818FF };
+int bc_MINUS[2] = { 0xFF000000, 0x000000FF };
+int bc_NULL[2] = { 0x8181817e, 0x7e818181 };
+int bc_ONE[2] = { 0x8890A0C0, 0x80808080 };
+int bc_TWO[2] = { 0x2040827C, 0xFE040810 };
+int bc_THREE[2] = { 0x6080817E, 0x7E818060 };
+int bc_FOUR[2] = { 0xFF818181, 0x80808080 };
+int bc_FIVE[2] = { 0x7F0101FF, 0x7F808080 };
+int bc_SIX[2] = { 0x0101817E, 0x7E81817F };
+int bc_SEVEN[2] = { 0x204080FE, 0x02040810 };
+int bc_EIGHT[2] = { 0x7E81817E, 0x7E818181 };
+int bc_NINE[2] = { 0x7E81817E, 0x7E808080 };
+int bc_A[2] = { 0x7E42423C, 0x42424242 };
+int bc_B[2] = { 0x3E42423E, 0x3E424242 };
+int bc_C[2] = { 0x0101017E, 0x7E010101 };
+int bc_D[2] = { 0x4242221E, 0x1E224242 };
+int bc_E[2] = { 0x7E02027E, 0x7E020202 };
+int bc_F[2] = { 0x7E02027E, 0x02020202 };
+
+int *bc_NUMS[16] = { bc_NULL, bc_ONE,   bc_TWO,   bc_THREE, bc_FOUR, bc_FIVE,
+                     bc_SIX,  bc_SEVEN, bc_EIGHT, bc_NINE,  bc_A,    bc_B,
+                     bc_C,    bc_D,     bc_E,     bc_F };
+
 int
-show_interface ()
+print_cell (int address)
 {
-  char buff[10];
-  int *value = malloc (sizeof (int));
-  int check_plus;
-  int x1 = 2, y1 = 2;
+  char buff[7];
+  int row, col, value, command, operand;
 
-  for (int i = 0; i != 10; ++i)
-    {
-      mt_gotoXY (x1, y1++);
-      for (int j = 0; j != 10; ++j)
-        {
-          sc_memoryGet (i * 10 + j, value);
-          check_plus = *value & 0x4000;
-          if (check_plus == 0)
-            {
-              sprintf (buff, "%s%04X ", "+", *value);
-            }
-          else
-            {
-              sprintf (buff, "%s%04X ", "-", *value);
-            }
-          write (1, buff, strlen (buff));
-        }
-    }
+  if (sc_memoryGet (address, &value) < 0
+      || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
+    return -1;
 
-  mt_gotoXY (70, 2);
-  write (1, "accumulator", sizeof ("accumulator"));
-  mt_gotoXY (73, 3);
-  write (1, "+9999", sizeof ("+9999"));
-  mt_gotoXY (70, 4);
-  write (1, "instructionCounter", sizeof ("instructionCounter"));
-  mt_gotoXY (73, 5);
-  write (1, "+0000", sizeof ("+0000"));
-  mt_gotoXY (70, 6);
-  write (1, "Operation", sizeof ("Operation"));
-  mt_gotoXY (73, 7);
-  write (1, "+00 : 00", sizeof ("+00 : 00"));
-  mt_gotoXY (70, 8);
-  write (1, "Flags", sizeof ("Flags"));
-  mt_gotoXY (73, 9);
-  write (1, "O E V M", sizeof ("O E V M"));
-  mt_gotoXY (50, 12);
-  write (1, "Keys:", sizeof ("Keys:"));
-  mt_gotoXY (48, 13);
-  write (1, "l - load", sizeof ("l - load"));
-  mt_gotoXY (48, 14);
-  write (1, "s - save", sizeof ("s - save"));
-  mt_gotoXY (48, 15);
-  write (1, "r - run", sizeof ("r - run"));
-  mt_gotoXY (48, 16);
-  write (1, "t - step", sizeof ("t - step"));
-  mt_gotoXY (48, 17);
-  write (1, "i - reset", sizeof ("i - reset"));
-  mt_gotoXY (48, 18);
-  write (1, "F5 - accumulator", sizeof ("F5 - accumulator"));
-  mt_gotoXY (48, 19);
-  write (1, "F6 - instructionCounter", sizeof ("F6 - instructionCounter"));
-  printf ("\n");
+  snprintf (buff, 7, "%c%02X%02X ", (value & 0x4000) ? '-' : '+', command,
+            operand);
+  row = address / 10;
+  col = address % 10;
+  mt_gotoXY (2 + row, 2 + col * 6);
+  write (1, buff, 6);
 
   return 0;
+}
+
+void
+print_bc_box_memory ()
+{
+
+  bc_box (1, 1, 12, 62);
+  mt_gotoXY (1, 27);
+  write (1, " Memory ", 9);
+}
+
+void
+print_accumulator ()
+{
+
+  bc_box (1, 64, 3, 88);
+  mt_gotoXY (1, 70);
+  write (1, " accumulator ", 14);
+  mt_gotoXY (2, 74);
+  write (1, "+0000", 5);
+}
+
+int
+print_instructionCounter ()
+{
+  char buff[7];
+  int instructionCounter = 50;
+  snprintf (buff, 6, "+%04X", instructionCounter);
+  bc_box (4, 64, 6, 88);
+  mt_gotoXY (4, 66);
+  write (1, " instructionCounter ", 21);
+  mt_gotoXY (5, 72);
+  write (1, buff, 6);
+
+  return instructionCounter;
+}
+
+int
+print_operation (int address)
+{
+  char buff[9];
+  int value, command, operand;
+
+  if (sc_memoryGet (address, &value) < 0
+      || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
+    return -1;
+
+  if ((value & 0x4000))
+    {
+      command = 0;
+      operand = 0;
+      sc_regSet (FLAG_WRONG_COMMAND, 1);
+    }
+  snprintf (buff, 9, "%c%02X : %02X", '+', command, operand);
+
+  bc_box (7, 64, 9, 88);
+  mt_gotoXY (7, 71);
+  write (1, " operation ", 12);
+  mt_gotoXY (8, 70);
+  write (1, buff, 9);
+
+  return 0;
+}
+
+void
+print_flags ()
+{
+  bc_box (10, 64, 12, 88);
+  mt_gotoXY (10, 71);
+  write (1, " Flags ", 8);
+
+  int value;
+
+  mt_gotoXY (11, 70);
+  sc_regGet (FLAG_OVERFLOW, &value);
+  write (1, ((value) ? "P" : ""), 1);
+
+  mt_gotoXY (11, 73);
+  sc_regGet (FLAG_ERR_DIV_BY_ZERO, &value);
+  write (1, ((value) ? "O" : ""), 1);
+
+  mt_gotoXY (11, 76);
+  sc_regGet (FLAG_WRONG_ADDRESS, &value);
+  write (1, ((value) ? "M" : ""), 1);
+
+  mt_gotoXY (11, 79);
+  sc_regGet (FLAG_IGNOR_TEXT_IMPULS, &value);
+  write (1, ((value) ? "T" : ""), 1);
+
+  mt_gotoXY (11, 82);
+  sc_regGet (FLAG_WRONG_COMMAND, &value);
+  write (1, ((value) ? "E" : ""), 1);
+}
+
+int
+print_BigChars (int address)
+{
+  bc_box (13, 1, 23, 47);
+
+  int value, command, operand;
+
+  if (sc_memoryGet (address, &value) < 0
+      || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
+    return -1;
+
+  (value & 0x4000) ? bc_printbigchar (bc_MINUS, 15, 2, White, Black)
+                   : bc_printbigchar (bc_PLUS, 15, 2, White, Black);
+
+  bc_printbigchar (bc_NUMS[(command >> 4) % 16], 15, 11, White, Black);
+  bc_printbigchar (bc_NUMS[(command & 0xf) % 16], 15, 20, White, Black);
+  bc_printbigchar (bc_NUMS[(operand >> 4) & 0xf % 16], 15, 29, White, Black);
+  bc_printbigchar (bc_NUMS[(operand & 0xf) % 16], 15, 38, White, Black);
+
+  return 0;
+}
+
+void
+print_Keys ()
+{
+  bc_box (13, 48, 23, 88);
+
+  mt_gotoXY (13, 50);
+  write (1, " Keys: ", 8);
+
+  mt_gotoXY (15, 49);
+  write (1, " l - load ", 11);
+
+  mt_gotoXY (16, 49);
+  write (1, " s - save ", 11);
+
+  mt_gotoXY (17, 49);
+  write (1, " r - run ", 10);
+
+  mt_gotoXY (18, 49);
+  write (1, " t - step ", 11);
+  mt_gotoXY (19, 49);
+  write (1, " i - reset ", 12);
+
+  mt_gotoXY (20, 49);
+  write (1, " F5 - accumulator ", 19);
+
+  mt_gotoXY (21, 49);
+  write (1, " F6 - instructionCounter ", 26);
 }

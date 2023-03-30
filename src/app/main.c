@@ -1,6 +1,7 @@
 #include <app/interface.h>
 #include <fcntl.h>
 #include <libcomputer/computerlib.h>
+#include <libmyBigChars/myBigChars.h>
 #include <libmyTerm/myTerm.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,13 +21,28 @@ main ()
     }
 
   mt_clrscr ();
-  mt_setfgcolor (Red);
-  mt_setbgcolor (White);
+  mt_setfgcolor (White);
+  mt_setbgcolor (Black);
   sc_memoryInit ();
-  sc_memorySet (1, 555);
-  sc_memorySet (2, 10);
-  show_interface ();
+  sc_regInit ();
+  sc_memorySet (0, 0x7FFF);
+  sc_memorySet (5, 4543);
+  sc_memorySet (50, 0777);
+  // print memory
+  for (int i = 0; i < 100; i++)
+    {
+      print_cell (i);
+    }
+  print_bc_box_memory ();
 
+  print_accumulator ();
+  int address = print_instructionCounter ();
+  print_operation (address);
+  print_flags ();
+  print_BigChars (address);
+  print_Keys ();
+
+  mt_gotoXY (25, 1);
   close (term);
 
   return 0;

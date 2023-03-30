@@ -20,16 +20,14 @@ mt_clrscr ()
 int
 mt_gotoXY (int x, int y)
 {
-  int row, col;
-  mt_getscreensize (&row, &col);
 
-  if (((x > col) || (x < 0)) || ((y > row) || (y < 0)))
+  if ((x < 0) || (y < 0))
     {
       return -1;
     }
 
   char buff[30];
-  sprintf (buff, "\E[%d;%dH", y, x);
+  sprintf (buff, "\E[%d;%dH", x, y);
 
   write (1, buff, strlen (buff));
 

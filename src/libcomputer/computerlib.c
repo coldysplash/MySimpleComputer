@@ -123,9 +123,7 @@ sc_regGet (int reg, int *value)
       return -1;
     }
 
-  flag_reg = (flag_reg >> (reg - 1)) & 0x1;
-
-  *value = flag_reg;
+  *value = (flag_reg >> (reg - 1)) & 0x1;
 
   return 0;
 }
@@ -157,7 +155,7 @@ sc_commandEncode (int command, int operand, int *value)
 
 // sc_commandDecode - декодирует значение как команду Simple Computer.
 int
-sc_commadDecode (int value, int *command, int *operand)
+sc_commandDecode (int value, int *command, int *operand)
 {
   if (command == NULL || operand == NULL)
     {
