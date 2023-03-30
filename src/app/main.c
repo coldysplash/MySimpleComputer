@@ -1,12 +1,12 @@
-#include <app/interface.h>
 #include <app/controldevice.h>
+#include <app/interface.h>
+#include <fcntl.h>
 #include <libcomputer/computerlib.h>
 #include <libmyBigChars/myBigChars.h>
 #include <libmyTerm/myTerm.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <fcntl.h>
 
 #define TERM_PATH "/dev/tty"
 
@@ -20,14 +20,14 @@ main ()
       close (term);
       return -1;
     }
-  
+
   sc_memoryInit ();
   sc_regInit ();
   sc_memorySet (0, 0x7FFF);
   sc_memorySet (5, 4543);
   sc_memorySet (50, 0777);
 
-  print_interface();
+  print_interface ();
 
   // print memory
   for (int i = 0; i < 100; i++)
@@ -35,7 +35,7 @@ main ()
       print_cell (i);
     }
 
-  output_GUI();
+  output_GUI ();
 
   mt_gotoXY (25, 1);
 

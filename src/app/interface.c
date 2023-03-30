@@ -26,41 +26,43 @@ print_cell (int address)
   return 0;
 }
 
-void print_interface(){
+void
+print_interface ()
+{
 
   mt_clrscr ();
   mt_setfgcolor (White);
   mt_setbgcolor (Black);
 
-  //bc_box for memory
+  // bc_box for memory
   bc_box (1, 1, 12, 62);
   mt_gotoXY (1, 27);
   write (1, " Memory ", 9);
 
-  //accumulator 
+  // accumulator
   bc_box (1, 64, 3, 88);
   mt_gotoXY (1, 70);
   write (1, " accumulator ", 14);
 
-  //instuctioncounter
+  // instuctioncounter
   bc_box (4, 64, 6, 88);
   mt_gotoXY (4, 66);
   write (1, " instructionCounter ", 21);
 
-  //operation
+  // operation
   bc_box (7, 64, 9, 88);
   mt_gotoXY (7, 71);
   write (1, " operation ", 12);
 
-  //flags
+  // flags
   bc_box (10, 64, 12, 88);
   mt_gotoXY (10, 71);
   write (1, " Flags ", 8);
 
-  //bc_box for bigChars
+  // bc_box for bigChars
   bc_box (13, 1, 23, 47);
 
-  //Keys
+  // Keys
   bc_box (13, 48, 23, 88);
 
   mt_gotoXY (13, 50);
@@ -85,5 +87,4 @@ void print_interface(){
 
   mt_gotoXY (21, 49);
   write (1, " F6 - instructionCounter ", 26);
-
 }

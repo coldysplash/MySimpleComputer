@@ -8,6 +8,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-int rk_readkey (enum keys *){
-    
+int
+rk_readkey (enum keys *)
+{
 }

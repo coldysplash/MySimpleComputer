@@ -120,10 +120,12 @@ output_BigChars ()
   return 0;
 }
 
-void output_GUI(){
-    output_accumulator ();
-    output_instructionCounter ();
-    output_operation ();
-    output_flags ();
-    output_BigChars ();
+void
+output_GUI ()
+{
+  output_accumulator ();
+  output_instructionCounter ();
+  output_operation ();
+  output_flags ();
+  output_BigChars ();
 }
