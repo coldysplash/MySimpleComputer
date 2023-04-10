@@ -92,7 +92,7 @@ output_flags ()
   write (1, ((value) ? "M" : ""), 1);
 
   mt_gotoXY (11, 79);
-  sc_regGet (FLAG_IGNOR_TEXT_IMPULS, &value);
+  sc_regGet (FLAG_IGNOR_TACT_IMPULS, &value);
   write (1, ((value) ? "T" : ""), 1);
 
   mt_gotoXY (11, 82);

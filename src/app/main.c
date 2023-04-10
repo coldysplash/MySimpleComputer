@@ -13,7 +13,7 @@
 int
 main ()
 {
-  int term = open (TERM_PATH, O_WRONLY);
+  int term = open (TERM_PATH, O_RDWR);
   if (term == -1 || isatty (0) == 0 || isatty (1) == 0)
     {
       fprintf (stderr, "Error!\n");
@@ -23,9 +23,7 @@ main ()
 
   sc_memoryInit ();
   sc_regInit ();
-  sc_memorySet (0, 0x7FFF);
-  sc_memorySet (5, 4543);
-  sc_memorySet (50, 0777);
+  sc_regSet(FLAG_IGNOR_TACT_IMPULS, 1);
 
   print_interface ();
 
@@ -35,7 +33,7 @@ main ()
       print_cell (i);
     }
 
-  output_GUI ();
+  output_GUI();
 
   mt_gotoXY (25, 1);
 
