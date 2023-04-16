@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <libcomputer/computerlib.h>
 #include <libmyBigChars/myBigChars.h>
+#include <libmyReadkey/myreadkey.h>
 #include <libmyTerm/myTerm.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,23 +21,15 @@ main ()
       close (term);
       return -1;
     }
-
-  sc_memoryInit ();
   sc_regInit ();
-  sc_regSet(FLAG_IGNOR_TACT_IMPULS, 1);
+  sc_memoryInit ();
+  sc_regSet (FLAG_IGNOR_TACT_IMPULS, 1);
 
-  print_interface ();
-
-  // print memory
-  for (int i = 0; i < 100; i++)
+  while (1)
     {
-      print_cell (i);
+      output_SimpleComputer ();
+      handler_keys ();
     }
-
-  output_GUI();
-
-  mt_gotoXY (25, 1);
-
   close (term);
 
   return 0;

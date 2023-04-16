@@ -1,9 +1,15 @@
+#include <app/controldevice.h>
+#include <app/interface.h>
+#include <fcntl.h>
 #include <libcomputer/computerlib.h>
 #include <libmyBigChars/myBigChars.h>
+#include <libmyReadkey/myreadkey.h>
 #include <libmyTerm/myTerm.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <termios.h>
 #include <unistd.h>
 
 int bc_PLUS[2] = { 0xFF181818, 0x181818FF };
@@ -120,12 +126,165 @@ output_BigChars ()
   return 0;
 }
 
+// void cursor(){
+
+//   int row, col;
+//   row = instructionCounter / 10;
+//   col = instructionCounter % 10;
+//   mt_gotoXY (2 + row, 2 + col * 6);
+//   mt_setbgcolor (Red);
+//   mt_gotoXY (4 + row, 2 + col * 6);
+// }
+
 void
-output_GUI ()
+output_SimpleComputer ()
 {
+  mt_clrscr ();
+  print_interface ();
+  // print memory
+  for (int i = 0; i < 100; i++)
+    {
+      print_cell (i, instructionCounter);
+      mt_setbgcolor (Black);
+    }
   output_accumulator ();
   output_instructionCounter ();
   output_operation ();
   output_flags ();
   output_BigChars ();
+  mt_gotoXY (25, 1);
+}
+
+int
+handler_keys ()
+{
+
+  rk_mytermregime (0, 0, 1, 1, 1);
+
+  enum keys k;
+  rk_readkey (&k);
+
+  if (k == RESET)
+    {
+      raise (SIGUSR1);
+      sc_regSet (FLAG_IGNOR_TACT_IMPULS, 1);
+    }
+  else if (k == RUN)
+    {
+      sc_regSet (FLAG_IGNOR_TACT_IMPULS, 0);
+    }
+  else if (k == STEP)
+    {
+      // int command = 0, operand = 0, value = 0;
+      // sc_memoryGet(instructionCounter, &value);
+      // if (value >> 14 == 0)
+      // {
+      //   sc_commandDecode(actual_operation, &command, &operand);
+      //   ALU(command, operand);
+      //   raise(SIGALRM);
+      // }
+    }
+  else if (k == UP)
+    {
+      if (instructionCounter > 9 && instructionCounter < 100)
+        {
+          instructionCounter -= 10;
+        }
+    }
+  else if (k == DOWN)
+    {
+      if (instructionCounter >= 0 && instructionCounter <= 89)
+        {
+          instructionCounter += 10;
+        }
+    }
+  else if (k == LEFT)
+    {
+      if (instructionCounter > 0 && instructionCounter < 100)
+        {
+          instructionCounter--;
+        }
+    }
+  else if (k == RIGHT)
+    {
+      if (instructionCounter >= 0 && instructionCounter < 99)
+        {
+          instructionCounter++;
+        }
+    }
+
+  if (k == ENTER || k == F5 || k == F6 || k == LOAD || k == SAVE)
+    {
+      int term = open ("/dev/tty", O_RDWR);
+      if (term == -1 || isatty (0) == 0 || isatty (1) == 0)
+        {
+          fprintf (stderr, "Error!\n");
+          close (term);
+          return -1;
+        }
+
+      rk_mytermregime (1, 0, 0, 1, 1);
+
+      char buf[12] = {};
+
+      mt_gotoXY (25, 1);
+      write (0, "Input/Output:", 14);
+      mt_gotoXY (26, 1);
+      write (0, ">", 2);
+
+      if (k == ENTER)
+        {
+          read (1, buf, 12);
+          int minus_flag = 0;
+          if (buf[0] == '-')
+            {
+              minus_flag = 1;
+              buf[0] = '0';
+            }
+          int actual_num = (int)atoi (buf);
+          if (minus_flag == 1)
+            {
+              actual_num |= 0x4000;
+            }
+
+          sc_memorySet (instructionCounter, actual_num);
+          setvbuf (stdout, NULL, _IONBF, 0);
+          setvbuf (stdin, NULL, _IONBF, 0);
+          close (term);
+        }
+      else if (k == F5)
+        {
+          read (1, buf, sizeof (buf));
+          int tmp_accum = (int)atoi (buf);
+          if (tmp_accum >= 0x0 && tmp_accum < 0x7fff)
+            {
+              accumulator = tmp_accum;
+            }
+          close (term);
+        }
+      else if (k == F6)
+        {
+          read (1, buf, sizeof (buf));
+          int new_ic = (int)atoi (buf);
+          if (new_ic >= 0 && new_ic < 99)
+            {
+              instructionCounter = new_ic;
+            }
+          close (term);
+        }
+      else if (k == LOAD)
+        {
+          read (1, buf, 11);
+          sc_memoryLoad (buf);
+          close (term);
+        }
+      else if (k == SAVE)
+        {
+          read (1, buf, 11);
+          sc_memorySave (buf);
+          close (term);
+        }
+    }
+
+  return 0;
 }

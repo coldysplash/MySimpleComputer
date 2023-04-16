@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/ioctl.h>
+#include <termios.h>
 #include <unistd.h>
 
 #define F5_KEY "\E[15~"
@@ -19,43 +20,157 @@
 int
 rk_readkey (enum keys *k)
 {
-
-  struct termios;
-  tcgetattr(0, &termios);
-  termios->c_lflag &= ~(ICANON | ISIG);
-  tcsetattr(0, TCSANOW, &termios);
-
   char buf[32];
-  read(0, buf, sizeof(buff));
+  read (0, buf, sizeof (buf));
 
-  if(buf == 'l'){
-    *k = LOAD;
-  }else if(buf == 's'){
-    *k = SAVE;
-  }else if(buf == 'r'){
-    *k = RUN;
-  }else if(buf == 't'){
-    *k = STEP;
-  }else if(buf == 'i'){
-    *k = RESET;
-  }else if(buf == F5_KEY){
-    *k = F5;
-  }else if(buf == F6_KEY){
-    *k = F6;
-  }else if(buf == DOWN_KEY){
-    *k = DOWN;
-  }else if(buf == UP_KEY){
-    *k = UP;
-  }else if(buf == LEFT_KEY){
-    *k = LEFT;
-  }else if(buf == RIGHT_KEY){
-    *k = RIGHT;
-  }else if(buf == ENTER_KEY){
-    *k = ENTER;
-  }else{
-    *k = OTHER;
-  }
+  if (strcmp (buf, "l") == 0)
+    {
+      *k = LOAD;
+    }
+  else if (strcmp (buf, "s") == 0)
+    {
+      *k = SAVE;
+    }
+  else if (strcmp (buf, "r") == 0)
+    {
+      *k = RUN;
+    }
+  else if (strcmp (buf, "t") == 0)
+    {
+      *k = STEP;
+    }
+  else if (strcmp (buf, "i") == 0)
+    {
+      *k = RESET;
+    }
+  else if (strcmp (buf, F5_KEY) == 0)
+    {
+      *k = F5;
+    }
+  else if (strcmp (buf, F6_KEY) == 0)
+    {
+      *k = F6;
+    }
+  else if (strcmp (buf, DOWN_KEY) == 0)
+    {
+      *k = DOWN;
+    }
+  else if (strcmp (buf, UP_KEY) == 0)
+    {
+      *k = UP;
+    }
+  else if (strcmp (buf, LEFT_KEY) == 0)
+    {
+      *k = LEFT;
+    }
+  else if (strcmp (buf, RIGHT_KEY) == 0)
+    {
+      *k = RIGHT;
+    }
+  else if (strcmp (buf, ENTER_KEY) == 0)
+    {
+      *k = ENTER;
+    }
+  else
+    {
+      *k = OTHER;
+    }
 
   return 0;
+}
+int
+rk_mytermsave ()
+{
+  struct termios term_set;
+  FILE *file;
 
+  if (tcgetattr (TCSANOW, &term_set) != 0)
+    {
+      return -1;
+    }
+  if ((file = fopen ("termsettings", "wb")) == NULL)
+    {
+      return -1;
+    }
+  fwrite (&term_set, sizeof (term_set), 1, file);
+
+  fclose (file);
+
+  return 0;
+}
+
+int
+rk_mytermrestore ()
+{
+  struct termios term_set;
+  FILE *file;
+
+  if ((file = fopen ("termsettings", "rb")) == NULL)
+    {
+      return -1;
+    }
+  if (fread (&term_set, sizeof (term_set), 1, file) <= 0)
+    {
+      return -1;
+    }
+  if (tcsetattr (0, TCSANOW, &term_set) != 0)
+    {
+      return -1;
+    }
+
+  return 0;
+}
+
+int
+rk_mytermregime (int regime, int vtime, int vmin, int echo, int sigint)
+{
+
+  struct termios term_set;
+
+  tcgetattr (0, &term_set);
+
+  if (regime == 1)
+    {
+      term_set.c_lflag |= ICANON;
+    }
+  else if (regime == 0)
+    {
+      term_set.c_lflag &= ~ICANON;
+      term_set.c_cc[VTIME] = vtime;
+      term_set.c_cc[VMIN] = vmin;
+    }
+  else
+    {
+      return -1;
+    }
+
+  if (echo == 1)
+    {
+      term_set.c_lflag |= ECHO;
+    }
+  else if (echo == 0)
+    {
+      term_set.c_lflag &= ~ECHO;
+    }
+  else
+    {
+      return -1;
+    }
+
+  if (sigint == 1)
+    {
+      term_set.c_lflag |= ISIG;
+    }
+  else if (sigint == 0)
+    {
+      term_set.c_lflag &= ~ISIG;
+    }
+  else
+    {
+      return -1;
+    }
+
+  tcsetattr (0, TCSANOW, &term_set);
+
+  return 0;
 }

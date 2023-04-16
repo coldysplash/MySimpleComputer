@@ -14,6 +14,7 @@ BC_DIR = $(SRC_DIR)/libmyBigChars
 COMPLIB_DIR = $(SRC_DIR)/libcomputer
 TERM_DIR = $(SRC_DIR)/libmyTerm
 MAIN_DIR = $(SRC_DIR)/app
+READKEY_DIR = $(SRC_DIR)/libmyReadkey
 
 OBJ_SRC_DIR = $(OBJ_DIR)/$(SRC_DIR)
 OBJ_TEST_DIR = $(OBJ_DIR)/$(TEST_DIR)
@@ -23,6 +24,7 @@ TEST_PATH = $(BIN_DIR)/$(TEST_NAME)
 LIB_COMPUTER_PATH = $(LIB_DIR)/libmySimpleComputer.a
 LIB_TERM_PATH = $(LIB_DIR)/libmyTerm.a
 LIB_BC_PATH = $(LIB_DIR)/libmyBigChars.a
+LIB_READKEY_PATH = $(LIB_DIR)/libmyreadkey.a
 
 .PHONY: all mkdir
 
@@ -35,7 +37,7 @@ mkdir:
 	mkdir -p $(OBJ_TEST_DIR)
 	mkdir -p $(LIB_DIR)
 
-$(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(OBJ_SRC_DIR)/interface.o $(OBJ_SRC_DIR)/controldevice.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH)
+$(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(OBJ_SRC_DIR)/myreadkey.o $(OBJ_SRC_DIR)/interface.o $(OBJ_SRC_DIR)/controldevice.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
 	$(CC) $(FLAGS) $^ -o $@
 
 $(LIB_COMPUTER_PATH) : $(OBJ_SRC_DIR)/computerlib.o
@@ -45,6 +47,9 @@ $(LIB_TERM_PATH) : $(OBJ_SRC_DIR)/myTerm.o
 	ar rc $@ $^
 
 $(LIB_BC_PATH) : $(OBJ_SRC_DIR)/myBigChars.o
+	ar rc $@ $^
+
+$(LIB_READKEY_PATH) : $(OBJ_SRC_DIR)/myreadkey.o
 	ar rc $@ $^
 
 $(OBJ_SRC_DIR)/main.o : $(MAIN_DIR)/main.c
@@ -63,6 +68,9 @@ $(OBJ_SRC_DIR)/myTerm.o : $(TERM_DIR)/myTerm.c
 	$(CC) -I src -c $(FLAGS) -o $@ $<
 
 $(OBJ_SRC_DIR)/myBigChars.o : $(BC_DIR)/myBigChars.c
+	$(CC) -I src -c $(FLAGS) -o $@ $<
+
+$(OBJ_SRC_DIR)/myreadkey.o : $(READKEY_DIR)/myreadkey.c
 	$(CC) -I src -c $(FLAGS) -o $@ $<
 
 run: $(APP_PATH)

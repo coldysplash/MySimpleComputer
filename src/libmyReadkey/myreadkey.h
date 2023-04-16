@@ -13,7 +13,7 @@ enum keys
   DOWN,
   RIGHT,
   LEFT,
-  ENTER
+  ENTER,
   OTHER
 };
 

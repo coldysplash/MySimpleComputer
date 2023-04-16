@@ -1,3 +1,4 @@
+#include <app/controldevice.h>
 #include <libcomputer/computerlib.h>
 #include <libmyBigChars/myBigChars.h>
 #include <libmyTerm/myTerm.h>
@@ -7,7 +8,7 @@
 #include <unistd.h>
 
 int
-print_cell (int address)
+print_cell (int address, int instructionCounter)
 {
   char buff[7];
   int row, col, value, command, operand;
@@ -15,6 +16,11 @@ print_cell (int address)
   if (sc_memoryGet (address, &value) < 0
       || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
     return -1;
+
+  if (address == instructionCounter)
+    {
+      mt_setbgcolor (Red);
+    }
 
   snprintf (buff, 7, "%c%02X%02X ", (value & 0x4000) ? '-' : '+', command,
             operand);
@@ -29,11 +35,6 @@ print_cell (int address)
 void
 print_interface ()
 {
-
-  mt_clrscr ();
-  mt_setfgcolor (White);
-  mt_setbgcolor (Black);
-
   // bc_box for memory
   bc_box (1, 1, 12, 62);
   mt_gotoXY (1, 27);
