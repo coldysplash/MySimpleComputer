@@ -2,7 +2,10 @@ CC = gcc
 FLAGS = -Wall -Wextra -Werror
 
 APP_NAME = MySimpleComputer
-TEST_NAME = test
+TEST_NAME_1 = test1
+TEST_NAME_2 = test2
+TEST_NAME_3 = test3
+TEST_NAME_4 = test4
 
 SRC_DIR = src
 TEST_DIR = test
@@ -20,7 +23,11 @@ OBJ_SRC_DIR = $(OBJ_DIR)/$(SRC_DIR)
 OBJ_TEST_DIR = $(OBJ_DIR)/$(TEST_DIR)
 
 APP_PATH = $(BIN_DIR)/$(APP_NAME)
-TEST_PATH = $(BIN_DIR)/$(TEST_NAME)
+TEST_PATH_1 = $(BIN_DIR)/$(TEST_NAME_1)
+TEST_PATH_2 = $(BIN_DIR)/$(TEST_NAME_2)
+TEST_PATH_3 = $(BIN_DIR)/$(TEST_NAME_3)
+TEST_PATH_4 = $(BIN_DIR)/$(TEST_NAME_4)
+
 LIB_COMPUTER_PATH = $(LIB_DIR)/libmySimpleComputer.a
 LIB_TERM_PATH = $(LIB_DIR)/libmyTerm.a
 LIB_BC_PATH = $(LIB_DIR)/libmyBigChars.a
@@ -28,7 +35,7 @@ LIB_READKEY_PATH = $(LIB_DIR)/libmyreadkey.a
 
 .PHONY: all mkdir
 
-all: mkdir $(APP_PATH)
+all: mkdir $(APP_PATH) $(TEST_PATH_1) $(TEST_PATH_2) $(TEST_PATH_3) $(TEST_PATH_4)
 
 mkdir:
 	mkdir -p $(BIN_DIR)
@@ -76,25 +83,35 @@ $(OBJ_SRC_DIR)/myreadkey.o : $(READKEY_DIR)/myreadkey.c
 run: $(APP_PATH)
 	$(APP_PATH)
 
-# TEST
+$(TEST_PATH_1) : $(OBJ_TEST_DIR)/test1.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
+	$(CC) $(FLAGS) $^ -o $@
 
-.PHONY: test
+$(TEST_PATH_2) : $(OBJ_TEST_DIR)/test2.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
+	$(CC) $(FLAGS) $^ -o $@
 
-test: $(TEST_PATH)
+$(TEST_PATH_3) : $(OBJ_TEST_DIR)/test3.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
+	$(CC) $(FLAGS) $^ -o $@
 
-$(TEST_PATH) : $(OBJ_TEST_DIR)/test.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH)
+$(TEST_PATH_4) : $(OBJ_TEST_DIR)/test4.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
 	$(CC) $(FLAGS) $^ -o $@
 
 $(OBJ_TEST_DIR)/main_test.o : $(TEST_DIR)/main.c
+	$(CC) $(FLAGS) -I thirdparty -I $(TEST_DIR) -c -o $@ $<
+
+$(OBJ_TEST_DIR)/test1.o : $(TEST_DIR)/test1.c
 	$(CC) $(FLAGS) -I thirdparty -I src -c -o $@ $<
 
-$(OBJ_TEST_DIR)/test.o : $(TEST_DIR)/tests.c
+$(OBJ_TEST_DIR)/test2.o : $(TEST_DIR)/test2.c
 	$(CC) $(FLAGS) -I thirdparty -I src -c -o $@ $<
 
-testrun: $(TEST_PATH)
-	$(TEST_PATH)
+$(OBJ_TEST_DIR)/test3.o : $(TEST_DIR)/test3.c
+	$(CC) $(FLAGS) -I thirdparty -I src -c -o $@ $<
 
-.PHONY: clean 
+$(OBJ_TEST_DIR)/test4.o : $(TEST_DIR)/test4.c
+	$(CC) $(FLAGS) -I thirdparty -I src -c -o $@ $<
+
+
+.PHONY: clean
 
 clean:
 	rm -rf obj bin lib
@@ -104,4 +121,3 @@ clean:
 rebuild:
 	rm -rf obj bin lib
 	make
-	make test
