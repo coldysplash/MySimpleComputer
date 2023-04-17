@@ -8,7 +8,7 @@
 #include <unistd.h>
 
 int
-print_cell (int address, int instructionCounter)
+print_cell (int address, int cursor)
 {
   char buff[7];
   int row, col, value, command, operand;
@@ -17,7 +17,7 @@ print_cell (int address, int instructionCounter)
       || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
     return -1;
 
-  if (address == instructionCounter)
+  if (address == cursor)
     {
       mt_setbgcolor (Red);
     }

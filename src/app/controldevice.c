@@ -35,6 +35,7 @@ int *bc_NUMS[16] = { bc_NULL, bc_ONE,   bc_TWO,   bc_THREE, bc_FOUR, bc_FIVE,
                      bc_SIX,  bc_SEVEN, bc_EIGHT, bc_NINE,  bc_A,    bc_B,
                      bc_C,    bc_D,     bc_E,     bc_F };
 
+int cursor = 0;
 int instructionCounter = 0;
 int accumulator = 0;
 
@@ -111,7 +112,7 @@ output_BigChars ()
 {
   int value, command, operand;
 
-  if (sc_memoryGet (instructionCounter, &value) < 0
+  if (sc_memoryGet (cursor, &value) < 0
       || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
     return -1;
 
@@ -134,7 +135,7 @@ output_SimpleComputer ()
   // print memory
   for (int i = 0; i < 100; i++)
     {
-      print_cell (i, instructionCounter);
+      print_cell (i, cursor);
       mt_setbgcolor (Black);
     }
   output_accumulator ();
@@ -174,30 +175,30 @@ handler_keys ()
     }
   else if (k == UP)
     {
-      if (instructionCounter > 9 && instructionCounter < 100)
+      if (cursor > 9 && cursor < 100)
         {
-          instructionCounter -= 10;
+          cursor -= 10;
         }
     }
   else if (k == DOWN)
     {
-      if (instructionCounter >= 0 && instructionCounter <= 89)
+      if (cursor >= 0 && cursor <= 89)
         {
-          instructionCounter += 10;
+          cursor += 10;
         }
     }
   else if (k == LEFT)
     {
-      if (instructionCounter > 0 && instructionCounter < 100)
+      if (cursor > 0 && cursor < 100)
         {
-          instructionCounter--;
+          cursor--;
         }
     }
   else if (k == RIGHT)
     {
-      if (instructionCounter >= 0 && instructionCounter < 99)
+      if (cursor >= 0 && cursor < 99)
         {
-          instructionCounter++;
+          cursor++;
         }
     }
 
@@ -235,7 +236,7 @@ handler_keys ()
               actual_num |= 0x4000;
             }
 
-          sc_memorySet (instructionCounter, actual_num);
+          sc_memorySet (cursor, actual_num);
           setvbuf (stdout, NULL, _IONBF, 0);
           setvbuf (stdin, NULL, _IONBF, 0);
 
