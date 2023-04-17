@@ -126,16 +126,6 @@ output_BigChars ()
   return 0;
 }
 
-// void cursor(){
-
-//   int row, col;
-//   row = instructionCounter / 10;
-//   col = instructionCounter % 10;
-//   mt_gotoXY (2 + row, 2 + col * 6);
-//   mt_setbgcolor (Red);
-//   mt_gotoXY (4 + row, 2 + col * 6);
-// }
-
 void
 output_SimpleComputer ()
 {
@@ -167,7 +157,12 @@ handler_keys ()
   if (k == RESET)
     {
       raise (SIGUSR1);
+      sc_memoryInit ();
       sc_regSet (FLAG_IGNOR_TACT_IMPULS, 1);
+      sc_regGet (FLAG_OVERFLOW, 0);
+      sc_regGet (FLAG_ERR_DIV_BY_ZERO, 0);
+      sc_regGet (FLAG_WRONG_ADDRESS, 0);
+      sc_regGet (FLAG_WRONG_COMMAND, 0);
     }
   else if (k == RUN)
     {
@@ -175,14 +170,7 @@ handler_keys ()
     }
   else if (k == STEP)
     {
-      // int command = 0, operand = 0, value = 0;
-      // sc_memoryGet(instructionCounter, &value);
-      // if (value >> 14 == 0)
-      // {
-      //   sc_commandDecode(actual_operation, &command, &operand);
-      //   ALU(command, operand);
-      //   raise(SIGALRM);
-      // }
+      // *code //
     }
   else if (k == UP)
     {
@@ -250,6 +238,7 @@ handler_keys ()
           sc_memorySet (instructionCounter, actual_num);
           setvbuf (stdout, NULL, _IONBF, 0);
           setvbuf (stdin, NULL, _IONBF, 0);
+
           close (term);
         }
       else if (k == F5)
