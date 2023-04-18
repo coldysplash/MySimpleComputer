@@ -1,3 +1,3 @@
 #pragma once
 
-void test_enter();
+void test_enter ();

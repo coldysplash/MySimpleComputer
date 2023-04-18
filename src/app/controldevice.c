@@ -204,13 +204,6 @@ handler_keys ()
 
   if (k == ENTER || k == F5 || k == F6 || k == LOAD || k == SAVE)
     {
-      int term = open ("/dev/tty", O_RDWR);
-      if (term == -1 || isatty (0) == 0 || isatty (1) == 0)
-        {
-          fprintf (stderr, "Error!\n");
-          close (term);
-          return -1;
-        }
 
       rk_mytermregime (1, 0, 0, 1, 1);
 
@@ -239,8 +232,6 @@ handler_keys ()
           sc_memorySet (cursor, actual_num);
           setvbuf (stdout, NULL, _IONBF, 0);
           setvbuf (stdin, NULL, _IONBF, 0);
-
-          close (term);
         }
       else if (k == F5)
         {
@@ -250,7 +241,6 @@ handler_keys ()
             {
               accumulator = tmp_accum;
             }
-          close (term);
         }
       else if (k == F6)
         {
@@ -260,19 +250,16 @@ handler_keys ()
             {
               instructionCounter = new_ic;
             }
-          close (term);
         }
       else if (k == LOAD)
         {
           read (1, buf, 11);
           sc_memoryLoad (buf);
-          close (term);
         }
       else if (k == SAVE)
         {
           read (1, buf, 11);
           sc_memorySave (buf);
-          close (term);
         }
     }
 

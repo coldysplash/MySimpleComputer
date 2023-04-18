@@ -83,20 +83,29 @@ $(OBJ_SRC_DIR)/myreadkey.o : $(READKEY_DIR)/myreadkey.c
 run: $(APP_PATH)
 	$(APP_PATH)
 
-$(TEST_PATH_1) : $(OBJ_TEST_DIR)/test1.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
+$(TEST_PATH_1) : $(OBJ_TEST_DIR)/test1.o $(OBJ_TEST_DIR)/main_test1.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
 	$(CC) $(FLAGS) $^ -o $@
 
-$(TEST_PATH_2) : $(OBJ_TEST_DIR)/test2.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
+$(TEST_PATH_2) : $(OBJ_TEST_DIR)/test2.o $(OBJ_TEST_DIR)/main_test2.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
 	$(CC) $(FLAGS) $^ -o $@
 
-$(TEST_PATH_3) : $(OBJ_TEST_DIR)/test3.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
+$(TEST_PATH_3) : $(OBJ_TEST_DIR)/test3.o $(OBJ_TEST_DIR)/main_test3.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
 	$(CC) $(FLAGS) $^ -o $@
 
-$(TEST_PATH_4) : $(OBJ_TEST_DIR)/test4.o $(OBJ_TEST_DIR)/main_test.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
+$(TEST_PATH_4) : $(OBJ_TEST_DIR)/test4.o $(OBJ_TEST_DIR)/main_test4.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
 	$(CC) $(FLAGS) $^ -o $@
 
-$(OBJ_TEST_DIR)/main_test.o : $(TEST_DIR)/main.c
-	$(CC) $(FLAGS) -I thirdparty -I $(TEST_DIR) -c -o $@ $<
+$(OBJ_TEST_DIR)/main_test1.o : $(TEST_DIR)/main_test1.c
+	$(CC) $(FLAGS) -I thirdparty -I $(TEST_DIR) -I src -c -o $@ $<
+
+$(OBJ_TEST_DIR)/main_test2.o : $(TEST_DIR)/main_test2.c
+	$(CC) $(FLAGS) -I thirdparty -I $(TEST_DIR) -I src -c -o $@ $<
+
+$(OBJ_TEST_DIR)/main_test3.o : $(TEST_DIR)/main_test3.c
+	$(CC) $(FLAGS) -I thirdparty -I $(TEST_DIR) -I src -c -o $@ $<
+
+$(OBJ_TEST_DIR)/main_test4.o : $(TEST_DIR)/main_test4.c
+	$(CC) $(FLAGS) -I thirdparty -I $(TEST_DIR) -I src -c -o $@ $<
 
 $(OBJ_TEST_DIR)/test1.o : $(TEST_DIR)/test1.c
 	$(CC) $(FLAGS) -I thirdparty -I src -c -o $@ $<
