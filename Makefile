@@ -1,5 +1,6 @@
 CC = gcc
 FLAGS = -Wall -Wextra -Werror
+TFLAGS = -I thirdparty -I src
 
 APP_NAME = MySimpleComputer
 TEST_NAME_1 = test1
@@ -8,8 +9,8 @@ TEST_NAME_3 = test3
 TEST_NAME_4 = test4
 
 SRC_DIR = src
-TEST_DIR = test
 OBJ_DIR = obj
+TEST_DIR = test
 BIN_DIR = bin
 LIB_DIR = lib
 
@@ -33,6 +34,9 @@ LIB_TERM_PATH = $(LIB_DIR)/libmyTerm.a
 LIB_BC_PATH = $(LIB_DIR)/libmyBigChars.a
 LIB_READKEY_PATH = $(LIB_DIR)/libmyreadkey.a
 
+PROJECT_SOURCES = $(MAIN_DIR)/main.c $(COMPLIB_DIR)/computerlib.c $(TERM_DIR)/myTerm.c $(BC_DIR)/myBigChars.c $(READKEY_DIR)/myreadkey.c $(MAIN_DIR)/interface.c $(MAIN_DIR)/controldevice.c
+PROJECT_OBJECTS = $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(OBJ_SRC_DIR)/myreadkey.o $(OBJ_SRC_DIR)/interface.o $(OBJ_SRC_DIR)/controldevice.o
+
 .PHONY: all mkdir
 
 all: mkdir $(APP_PATH) $(TEST_PATH_1) $(TEST_PATH_2) $(TEST_PATH_3) $(TEST_PATH_4)
@@ -44,7 +48,7 @@ mkdir:
 	mkdir -p $(OBJ_TEST_DIR)
 	mkdir -p $(LIB_DIR)
 
-$(APP_PATH) : $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(OBJ_SRC_DIR)/myreadkey.o $(OBJ_SRC_DIR)/interface.o $(OBJ_SRC_DIR)/controldevice.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
+$(APP_PATH) : $(PROJECT_OBJECTS) $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
 	$(CC) $(FLAGS) $^ -o $@
 
 $(LIB_COMPUTER_PATH) : $(OBJ_SRC_DIR)/computerlib.o
@@ -59,74 +63,53 @@ $(LIB_BC_PATH) : $(OBJ_SRC_DIR)/myBigChars.o
 $(LIB_READKEY_PATH) : $(OBJ_SRC_DIR)/myreadkey.o
 	ar rc $@ $^
 
-$(OBJ_SRC_DIR)/main.o : $(MAIN_DIR)/main.c
-	$(CC) -I src -c $(FLAGS) -o $@ $<
+$(PROJECT_OBJECTS): $(PROJECT_SOURCES)
+	$(CC) $(FLAGS) -I src -c $(MAIN_DIR)/main.c -o $(OBJ_SRC_DIR)/main.o
+	$(CC) $(FLAGS) -I src -c $(COMPLIB_DIR)/computerlib.c -o $(OBJ_SRC_DIR)/computerlib.o
+	$(CC) $(FLAGS) -I src -c $(TERM_DIR)/myTerm.c -o $(OBJ_SRC_DIR)/myTerm.o
+	$(CC) $(FLAGS) -I src -c $(BC_DIR)/myBigChars.c -o $(OBJ_SRC_DIR)/myBigChars.o
+	$(CC) $(FLAGS) -I src -c $(READKEY_DIR)/myreadkey.c -o $(OBJ_SRC_DIR)/myreadkey.o
+	$(CC) $(FLAGS) -I src -c $(MAIN_DIR)/interface.c -o $(OBJ_SRC_DIR)/interface.o
+	$(CC) $(FLAGS) -I src -c $(MAIN_DIR)/controldevice.c -o $(OBJ_SRC_DIR)/controldevice.o
 
-$(OBJ_SRC_DIR)/interface.o : $(MAIN_DIR)/interface.c
-	$(CC) -I src -c $(FLAGS) -o $@ $<
+#TEST
 
-$(OBJ_SRC_DIR)/controldevice.o : $(MAIN_DIR)/controldevice.c
-	$(CC) -I src -c $(FLAGS) -o $@ $<
+OBJECTS_FOR_TEST = $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(OBJ_SRC_DIR)/myreadkey.o $(OBJ_SRC_DIR)/interface.o $(OBJ_SRC_DIR)/controldevice.o
 
-$(OBJ_SRC_DIR)/computerlib.o : $(COMPLIB_DIR)/computerlib.c
-	$(CC) -I src -c $(FLAGS) -o $@ $<
+SOURCES_TEST = $(TEST_DIR)/test1.c $(TEST_DIR)/test2.c $(TEST_DIR)/test3.c $(TEST_DIR)/test4.c
+OBJECTS_TEST = $(OBJ_TEST_DIR)/test1.o $(OBJ_TEST_DIR)/test2.o $(OBJ_TEST_DIR)/test3.o $(OBJ_TEST_DIR)/test4.o
 
-$(OBJ_SRC_DIR)/myTerm.o : $(TERM_DIR)/myTerm.c
-	$(CC) -I src -c $(FLAGS) -o $@ $<
+SOURCES_TEST_MAIN = $(TEST_DIR)/main_test1.c $(TEST_DIR)/main_test2.c $(TEST_DIR)/main_test3.c $(TEST_DIR)/main_test4.c
+OBJECTS_TEST_MAIN = $(OBJ_TEST_DIR)/main_test1.o $(OBJ_TEST_DIR)/main_test2.o $(OBJ_TEST_DIR)/main_test3.o $(OBJ_TEST_DIR)/main_test4.o
 
-$(OBJ_SRC_DIR)/myBigChars.o : $(BC_DIR)/myBigChars.c
-	$(CC) -I src -c $(FLAGS) -o $@ $<
+$(TEST_PATH_1) : $(OBJ_TEST_DIR)/test1.o $(OBJ_TEST_DIR)/main_test1.o $(OBJECTS_FOR_TEST)
+	$(CC) $(FLAGS) $^ -o $@
 
-$(OBJ_SRC_DIR)/myreadkey.o : $(READKEY_DIR)/myreadkey.c
-	$(CC) -I src -c $(FLAGS) -o $@ $<
+$(TEST_PATH_2) : $(OBJ_TEST_DIR)/test2.o $(OBJ_TEST_DIR)/main_test2.o $(OBJECTS_FOR_TEST) 
+	$(CC) $(FLAGS) $^ -o $@
+
+$(TEST_PATH_3) : $(OBJ_TEST_DIR)/test3.o $(OBJ_TEST_DIR)/main_test3.o $(OBJECTS_FOR_TEST) 
+	$(CC) $(FLAGS) $^ -o $@
+
+$(TEST_PATH_4) : $(OBJ_TEST_DIR)/test4.o $(OBJ_TEST_DIR)/main_test4.o $(OBJECTS_FOR_TEST) 
+	$(CC) $(FLAGS) $^ -o $@
+
+$(OBJECTS_TEST_MAIN) : $(SOURCES_TEST_MAIN)
+	$(CC) $(FLAGS) $(TFLAGS) -c $(TEST_DIR)/main_test1.c -o $(OBJ_TEST_DIR)/main_test1.o
+	$(CC) $(FLAGS) $(TFLAGS) -c $(TEST_DIR)/main_test2.c -o $(OBJ_TEST_DIR)/main_test2.o
+	$(CC) $(FLAGS) $(TFLAGS) -c $(TEST_DIR)/main_test3.c -o $(OBJ_TEST_DIR)/main_test3.o
+	$(CC) $(FLAGS) $(TFLAGS) -I $(TEST_DIR) -c $(TEST_DIR)/main_test4.c -o $(OBJ_TEST_DIR)/main_test4.o
+
+$(OBJECTS_TEST) : $(SOURCES_TEST)
+	$(CC) $(FLAGS) $(TFLAGS) -c $(TEST_DIR)/test1.c -o $(OBJ_TEST_DIR)/test1.o
+	$(CC) $(FLAGS) $(TFLAGS) -c $(TEST_DIR)/test2.c -o $(OBJ_TEST_DIR)/test2.o
+	$(CC) $(FLAGS) $(TFLAGS) -c $(TEST_DIR)/test3.c -o $(OBJ_TEST_DIR)/test3.o
+	$(CC) $(FLAGS) $(TFLAGS) -c $(TEST_DIR)/test4.c -o $(OBJ_TEST_DIR)/test4.o
 
 run: $(APP_PATH)
 	$(APP_PATH)
-
-$(TEST_PATH_1) : $(OBJ_TEST_DIR)/test1.o $(OBJ_TEST_DIR)/main_test1.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
-	$(CC) $(FLAGS) $^ -o $@
-
-$(TEST_PATH_2) : $(OBJ_TEST_DIR)/test2.o $(OBJ_TEST_DIR)/main_test2.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
-	$(CC) $(FLAGS) $^ -o $@
-
-$(TEST_PATH_3) : $(OBJ_TEST_DIR)/test3.o $(OBJ_TEST_DIR)/main_test3.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
-	$(CC) $(FLAGS) $^ -o $@
-
-$(TEST_PATH_4) : $(OBJ_TEST_DIR)/test4.o $(OBJ_TEST_DIR)/main_test4.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
-	$(CC) $(FLAGS) $^ -o $@
-
-$(OBJ_TEST_DIR)/main_test1.o : $(TEST_DIR)/main_test1.c
-	$(CC) $(FLAGS) -I thirdparty -I $(TEST_DIR) -I src -c -o $@ $<
-
-$(OBJ_TEST_DIR)/main_test2.o : $(TEST_DIR)/main_test2.c
-	$(CC) $(FLAGS) -I thirdparty -I $(TEST_DIR) -I src -c -o $@ $<
-
-$(OBJ_TEST_DIR)/main_test3.o : $(TEST_DIR)/main_test3.c
-	$(CC) $(FLAGS) -I thirdparty -I $(TEST_DIR) -I src -c -o $@ $<
-
-$(OBJ_TEST_DIR)/main_test4.o : $(TEST_DIR)/main_test4.c
-	$(CC) $(FLAGS) -I thirdparty -I $(TEST_DIR) -I src -c -o $@ $<
-
-$(OBJ_TEST_DIR)/test1.o : $(TEST_DIR)/test1.c
-	$(CC) $(FLAGS) -I thirdparty -I src -c -o $@ $<
-
-$(OBJ_TEST_DIR)/test2.o : $(TEST_DIR)/test2.c
-	$(CC) $(FLAGS) -I thirdparty -I src -c -o $@ $<
-
-$(OBJ_TEST_DIR)/test3.o : $(TEST_DIR)/test3.c
-	$(CC) $(FLAGS) -I thirdparty -I src -c -o $@ $<
-
-$(OBJ_TEST_DIR)/test4.o : $(TEST_DIR)/test4.c
-	$(CC) $(FLAGS) -I thirdparty -I src -c -o $@ $<
-
 
 .PHONY: clean
 
 clean:
 	rm -rf obj bin lib
-
-.PHONY: rebuild
-
-rebuild:
-	rm -rf obj bin lib
-	make
