@@ -149,11 +149,19 @@ output_SimpleComputer ()
 int
 handler_keys ()
 {
+  int value;
+  enum keys k;
 
   rk_mytermregime (0, 0, 1, 1, 1);
 
-  enum keys k;
-  rk_readkey (&k);
+  sc_regGet (FLAG_IGNOR_TACT_IMPULS, &value);
+
+  if(value == 1){
+    rk_readkey (&k);
+  }else{
+    char bf[2];
+    read(1, bf, 2);
+  }
 
   if (k == RESET)
     {

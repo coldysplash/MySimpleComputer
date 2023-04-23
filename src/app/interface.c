@@ -45,7 +45,7 @@ print_interface ()
   mt_gotoXY (1, 70);
   write (1, " accumulator ", 14);
 
-  // instuctioncounter
+  // instructioncounter
   bc_box (4, 64, 6, 88);
   mt_gotoXY (4, 66);
   write (1, " instructionCounter ", 21);

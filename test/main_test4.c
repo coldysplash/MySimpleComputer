@@ -15,6 +15,7 @@ int
 main (int argc, const char **argv)
 {
   sc_memoryInit ();
+  rk_mytermsave();
   while (1)
     {
       test_enter ();
