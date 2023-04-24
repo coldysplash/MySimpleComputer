@@ -156,12 +156,15 @@ handler_keys ()
 
   sc_regGet (FLAG_IGNOR_TACT_IMPULS, &value);
 
-  if(value == 1){
-    rk_readkey (&k);
-  }else{
-    char bf[2];
-    read(1, bf, 2);
-  }
+  if (value == 1)
+    {
+      rk_readkey (&k);
+    }
+  else
+    {
+      char bf[2];
+      read (1, bf, 2);
+    }
 
   if (k == RESET)
     {
