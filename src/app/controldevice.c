@@ -168,13 +168,12 @@ handler_keys ()
 
   if (k == RESET)
     {
-      raise (SIGUSR1);
-      sc_memoryInit ();
+      sc_memoryInit();
       sc_regSet (FLAG_IGNOR_TACT_IMPULS, 1);
-      sc_regGet (FLAG_OVERFLOW, 0);
-      sc_regGet (FLAG_ERR_DIV_BY_ZERO, 0);
-      sc_regGet (FLAG_WRONG_ADDRESS, 0);
-      sc_regGet (FLAG_WRONG_COMMAND, 0);
+      sc_regSet (FLAG_OVERFLOW, 0);
+      sc_regSet (FLAG_ERR_DIV_BY_ZERO, 0);
+      sc_regSet (FLAG_WRONG_ADDRESS, 0);
+      sc_regSet (FLAG_WRONG_COMMAND, 0);
     }
   else if (k == RUN)
     {
@@ -264,12 +263,14 @@ handler_keys ()
         }
       else if (k == LOAD)
         {
-          read (1, buf, 11);
+          read (1, buf, 12);
+	  //buf[strlen(buf -1)] = '\0';
           sc_memoryLoad (buf);
         }
       else if (k == SAVE)
         {
-          read (1, buf, 11);
+          read (1, buf, 12);
+	  buf[strlen(buf) - 1] = '\0';
           sc_memorySave (buf);
         }
     }

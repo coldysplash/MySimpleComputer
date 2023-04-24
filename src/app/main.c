@@ -9,16 +9,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define TERM_PATH "/dev/tty"
-
 int
 main ()
 {
-  int term = open (TERM_PATH, O_RDWR);
-  if (term == -1 || isatty (0) == 0 || isatty (1) == 0)
+  if (isatty (0) == 0 || isatty (1) == 0)
     {
       fprintf (stderr, "Error!\n");
-      close (term);
       return -1;
     }
   sc_regInit ();
@@ -30,7 +26,6 @@ main ()
       output_SimpleComputer ();
       handler_keys ();
     }
-  close (term);
 
   return 0;
 }
