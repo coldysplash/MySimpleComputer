@@ -1,7 +1,9 @@
+#include <app/controldevice.h>
 #include <app/interface.h>
 #include <fcntl.h>
 #include <libcomputer/computerlib.h>
 #include <libmyBigChars/myBigChars.h>
+#include <libmyReadkey/myreadkey.h>
 #include <libmyTerm/myTerm.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,37 +14,22 @@
 int
 main ()
 {
-  int term = open (TERM_PATH, O_WRONLY);
+  int term = open (TERM_PATH, O_RDWR);
   if (term == -1 || isatty (0) == 0 || isatty (1) == 0)
     {
       fprintf (stderr, "Error!\n");
       close (term);
       return -1;
     }
-
-  mt_clrscr ();
-  mt_setfgcolor (White);
-  mt_setbgcolor (Black);
-  sc_memoryInit ();
   sc_regInit ();
-  sc_memorySet (0, 0x7FFF);
-  sc_memorySet (5, 4543);
-  sc_memorySet (50, 0777);
-  // print memory
-  for (int i = 0; i < 100; i++)
+  sc_memoryInit ();
+  sc_regSet (FLAG_IGNOR_TACT_IMPULS, 1);
+
+  while (1)
     {
-      print_cell (i);
+      output_SimpleComputer ();
+      handler_keys ();
     }
-  print_bc_box_memory ();
-
-  print_accumulator ();
-  int address = print_instructionCounter ();
-  print_operation (address);
-  print_flags ();
-  print_BigChars (address);
-  print_Keys ();
-
-  mt_gotoXY (25, 1);
   close (term);
 
   return 0;
