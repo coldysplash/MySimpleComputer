@@ -76,9 +76,10 @@ sc_memoryLoad (char *filename)
       return -1;
     }
 
-  for(int i = 0; i < memorysize; i++){
-    fread (&sc_ram[i], sizeof (int), 1, file);
-  }
+  for (int i = 0; i < memorysize; i++)
+    {
+      fread (&sc_ram[i], sizeof (int), 1, file);
+    }
 
   fclose (file);
 

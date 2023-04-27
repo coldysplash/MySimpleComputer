@@ -1,5 +1,5 @@
-#include <app/controldevice.h>
-#include <app/interface.h>
+#include <MySimpleComputerApp/CU.h>
+#include <MySimpleComputerApp/interface.h>
 #include <fcntl.h>
 #include <libcomputer/computerlib.h>
 #include <libmyBigChars/myBigChars.h>

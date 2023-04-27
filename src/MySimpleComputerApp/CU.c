@@ -1,5 +1,5 @@
-#include <app/controldevice.h>
-#include <app/interface.h>
+#include <MySimpleComputerApp/CU.h>
+#include <MySimpleComputerApp/interface.h>
 #include <fcntl.h>
 #include <libcomputer/computerlib.h>
 #include <libmyBigChars/myBigChars.h>
@@ -168,12 +168,15 @@ handler_keys ()
 
   if (k == RESET)
     {
-      sc_memoryInit();
+      sc_memoryInit ();
       sc_regSet (FLAG_IGNOR_TACT_IMPULS, 1);
       sc_regSet (FLAG_OVERFLOW, 0);
       sc_regSet (FLAG_ERR_DIV_BY_ZERO, 0);
       sc_regSet (FLAG_WRONG_ADDRESS, 0);
       sc_regSet (FLAG_WRONG_COMMAND, 0);
+      instructionCounter = 0;
+      accumulator = 0;
+      cursor = 0;
     }
   else if (k == RUN)
     {
@@ -264,13 +267,13 @@ handler_keys ()
       else if (k == LOAD)
         {
           read (1, buf, 12);
-	  //buf[strlen(buf -1)] = '\0';
+          // buf[strlen(buf -1)] = '\0';
           sc_memoryLoad (buf);
         }
       else if (k == SAVE)
         {
           read (1, buf, 12);
-	  buf[strlen(buf) - 1] = '\0';
+          buf[strlen (buf) - 1] = '\0';
           sc_memorySave (buf);
         }
     }
