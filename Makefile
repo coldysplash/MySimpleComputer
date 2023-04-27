@@ -34,8 +34,8 @@ LIB_TERM_PATH = $(LIB_DIR)/libmyTerm.a
 LIB_BC_PATH = $(LIB_DIR)/libmyBigChars.a
 LIB_READKEY_PATH = $(LIB_DIR)/libmyreadkey.a
 
-PROJECT_SOURCES = $(MAIN_DIR)/main.c $(COMPLIB_DIR)/computerlib.c $(TERM_DIR)/myTerm.c $(BC_DIR)/myBigChars.c $(READKEY_DIR)/myreadkey.c $(MAIN_DIR)/interface.c $(MAIN_DIR)/CU.c
-PROJECT_OBJECTS = $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(OBJ_SRC_DIR)/myreadkey.o $(OBJ_SRC_DIR)/interface.o $(OBJ_SRC_DIR)/CU.o
+PROJECT_SOURCES = $(MAIN_DIR)/main.c $(COMPLIB_DIR)/computerlib.c $(TERM_DIR)/myTerm.c $(BC_DIR)/myBigChars.c $(READKEY_DIR)/myreadkey.c $(MAIN_DIR)/interface.c $(MAIN_DIR)/CU.c $(MAIN_DIR)/ALU.c
+PROJECT_OBJECTS = $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(OBJ_SRC_DIR)/myreadkey.o $(OBJ_SRC_DIR)/interface.o $(OBJ_SRC_DIR)/CU.o $(OBJ_SRC_DIR)/ALU.o
 
 .PHONY: all mkdir
 
@@ -70,11 +70,12 @@ $(PROJECT_OBJECTS): $(PROJECT_SOURCES)
 	$(CC) $(FLAGS) -I src -c $(BC_DIR)/myBigChars.c -o $(OBJ_SRC_DIR)/myBigChars.o
 	$(CC) $(FLAGS) -I src -c $(READKEY_DIR)/myreadkey.c -o $(OBJ_SRC_DIR)/myreadkey.o
 	$(CC) $(FLAGS) -I src -c $(MAIN_DIR)/interface.c -o $(OBJ_SRC_DIR)/interface.o
-	$(CC) $(FLAGS) -I src -c $(MAIN_DIR)/CU.c -o $(OBJ_SRC_DIR)/CU.o
+	$(CC) $(FLAGS) -I src -c $(MAIN_DIR)/ALU.c -o $(OBJ_SRC_DIR)/ALU.o
+	$(CC) $(FLAGS) -I src -c $(MAIN_DIR)/CU.c -o $(OBJ_SRC_DIR)/CU.o 
 
 #TEST
 
-OBJECTS_FOR_TEST = $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(OBJ_SRC_DIR)/myreadkey.o $(OBJ_SRC_DIR)/interface.o $(OBJ_SRC_DIR)/CU.o
+OBJECTS_FOR_TEST = $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_DIR)/myTerm.o $(OBJ_SRC_DIR)/myBigChars.o $(OBJ_SRC_DIR)/myreadkey.o $(OBJ_SRC_DIR)/interface.o $(OBJ_SRC_DIR)/CU.o $(OBJ_SRC_DIR)/ALU.o
 
 SOURCES_TEST = $(TEST_DIR)/test1.c $(TEST_DIR)/test2.c $(TEST_DIR)/test3.c $(TEST_DIR)/test4.c
 OBJECTS_TEST = $(OBJ_TEST_DIR)/test1.o $(OBJ_TEST_DIR)/test2.o $(OBJ_TEST_DIR)/test3.o $(OBJ_TEST_DIR)/test4.o

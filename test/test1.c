@@ -15,8 +15,15 @@ CTEST (test_memSet, test_memGet)
   ASSERT_EQUAL (sc_memorySet (1, 1), 0);
   ASSERT_EQUAL (sc_memorySet (200, 20), -1);
 
-  int value = 0;
-  sc_memoryGet (28, &value);
+  int value, command, operand;
+  sc_commandEncode (10, 10, &value);
+  printf("\n %04X \n", value);
+  sc_memorySet(1, 0x050A);
+  sc_memoryGet (1, &value);
+  sc_commandDecode(value & 0x3FFF, &command, &operand);
+  printf("\n %X \n", command);
+  printf("\n %X \n", operand);
+
 }
 
 CTEST (test_sc_regGet, sc_regGet)

@@ -1,4 +1,6 @@
 #pragma once
+#include <MySimpleComputerApp/ALU.h>
+extern int accumulator;
 
 void output_accumulator ();
 void output_instructionCounter ();
@@ -7,3 +9,4 @@ void output_flags ();
 int output_BigChars ();
 void output_SimpleComputer ();
 int handler_keys ();
+int CU();
