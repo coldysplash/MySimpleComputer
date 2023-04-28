@@ -17,13 +17,12 @@ CTEST (test_memSet, test_memGet)
 
   int value, command, operand;
   sc_commandEncode (10, 10, &value);
-  printf("\n %04X \n", value);
-  sc_memorySet(1, 0x050A);
+  printf ("\n %04X \n", value);
+  sc_memorySet (1, 0x050A);
   sc_memoryGet (1, &value);
-  sc_commandDecode(value & 0x3FFF, &command, &operand);
-  printf("\n %X \n", command);
-  printf("\n %X \n", operand);
-
+  sc_commandDecode (value & 0x3FFF, &command, &operand);
+  printf ("\n %X \n", command);
+  printf ("\n %X \n", operand);
 }
 
 CTEST (test_sc_regGet, sc_regGet)

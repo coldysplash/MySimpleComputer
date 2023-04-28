@@ -1,17 +1,17 @@
-#include <MySimpleComputerApp/CU.h>
 #include <MySimpleComputerApp/ALU.h>
+#include <MySimpleComputerApp/CU.h>
 #include <MySimpleComputerApp/interface.h>
+#include <fcntl.h>
 #include <libcomputer/computerlib.h>
 #include <libmyBigChars/myBigChars.h>
 #include <libmyReadkey/myreadkey.h>
 #include <libmyTerm/myTerm.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
-#include <fcntl.h>
-#include <signal.h>
 
 int bc_PLUS[2] = { 0xFF181818, 0x181818FF };
 int bc_MINUS[2] = { 0xFF000000, 0x000000FF };
@@ -44,9 +44,13 @@ void
 output_accumulator ()
 {
   char buff[7];
-  snprintf (buff, 6, "+%04X", accumulator);
+  int command, operand;
+  sc_commandDecode (accumulator & 0x3FFF, &command, &operand);
+
+  snprintf (buff, 7, "%c%02X%02X ", (accumulator & 0x4000) ? '-' : '+',
+            command, operand);
   mt_gotoXY (2, 74);
-  write (1, buff, 6);
+  write (1, buff, 7);
 }
 
 void
@@ -73,10 +77,12 @@ output_operation ()
       command = 0;
       operand = 0;
       sc_regSet (FLAG_WRONG_COMMAND, 1);
-    }else{
+    }
+  else
+    {
       sc_regSet (FLAG_WRONG_COMMAND, 0);
     }
-    snprintf (buff, 9, "%c%02X : %02X", '+', command, operand);
+  snprintf (buff, 9, "%c%02X : %02X", '+', command, operand);
 
   mt_gotoXY (8, 70);
   write (1, buff, 9);
@@ -152,22 +158,11 @@ output_SimpleComputer ()
 int
 handler_keys ()
 {
-  int value;
   enum keys k;
 
   rk_mytermregime (0, 0, 1, 1, 1);
 
-  sc_regGet (FLAG_IGNOR_TACT_IMPULS, &value);
-
-  if (value == 1)
-    {
-      rk_readkey (&k);
-    }
-  else
-    {
-      char bf[2];
-      read (1, bf, 2);
-    }
+  rk_readkey (&k);
 
   if (k == RESET)
     {
@@ -183,11 +178,11 @@ handler_keys ()
     }
   else if (k == RUN)
     {
-      sc_regSet (FLAG_IGNOR_TACT_IMPULS, 0);
+      CU ();
     }
   else if (k == STEP)
     {
-      CU();
+      CU ();
     }
   else if (k == UP)
     {
@@ -244,17 +239,30 @@ handler_keys ()
             {
               actual_num |= 0x4000;
             }
-          if(actual_num <= 65535){
-            sc_memorySet (cursor, actual_num);
-          }else{
-            return -1;
-          }
+          if (actual_num <= 65535)
+            {
+              sc_memorySet (cursor, actual_num);
+            }
+          else
+            {
+              return -1;
+            }
         }
       else if (k == F5)
         {
           read (1, buf, sizeof (buf));
+          int minus_flag = 0;
+          if (buf[0] == '-')
+            {
+              minus_flag = 1;
+              buf[0] = '0';
+            }
           int tmp_accum = (int)atoi (buf);
-          if (tmp_accum >= 0x0 && tmp_accum < 0x7fff)
+          if (minus_flag == 1)
+            {
+              tmp_accum |= 0x4000;
+            }
+          if (tmp_accum <= 65535)
             {
               accumulator = tmp_accum;
             }
@@ -285,69 +293,148 @@ handler_keys ()
   return 0;
 }
 
-int CU(){
+int
+CU ()
+{
+
+  sc_regSet (FLAG_IGNOR_TACT_IMPULS, 0);
 
   int check_flag_wrong_command = 0;
   int memory_cell = 0, command = 0, operand = 0;
   cursor = instructionCounter;
 
-  sc_regGet(FLAG_WRONG_COMMAND, &check_flag_wrong_command);
-  if(check_flag_wrong_command == 1){
-    return -1;
-  }
+  sc_regGet (FLAG_WRONG_COMMAND, &check_flag_wrong_command);
+  if (check_flag_wrong_command == 1)
+    {
+      return -1;
+    }
 
-  sc_memoryGet(instructionCounter, &memory_cell);
+  sc_memoryGet (instructionCounter, &memory_cell);
 
-  if(sc_commandDecode(memory_cell & 0x3FFF, &command, &operand) == -1){
-    sc_regSet(FLAG_WRONG_COMMAND, 1);
-    return -1;
-  };
+  if (sc_commandDecode (memory_cell & 0x3FFF, &command, &operand) == -1)
+    {
+      sc_regSet (FLAG_WRONG_COMMAND, 1);
+      return -1;
+    };
 
-  if(command == 30 || command == 31 || command == 32 || command == 33){
-    ALU(command, operand);
-  }
+  if (command == 30 || command == 31 || command == 32 || command == 33)
+    {
+      ALU (command, operand);
+    }
 
-  if(command == 10){ /*READ*/
-          rk_mytermregime (1, 0, 0, 1, 1);
+  if (command == 10)
+    { /*READ*/
+      rk_mytermregime (1, 0, 0, 1, 1);
 
-          mt_gotoXY (25, 1);
-          write (0, "Input/Output:", 14);
-          mt_gotoXY (26, 1);
-          write (0, ">", 2);
-          
-          char buf[12];
-          read (1, buf, 12);
-          int minus_flag = 0;
-          if (buf[0] == '-')
-            {
-              minus_flag = 1;
-              buf[0] = '0';
-            }
-          int actual_num = (int)atoi (buf);
-          if (minus_flag == 1)
-            {
-              actual_num |= 0x4000;
-            }
-          if(actual_num <= 65535){
-            sc_memorySet (instructionCounter, actual_num);
-          }else{
-            return -1;
-          }
-  }else if(command == 11){
-    /*WRITE*/
-  }else if(command == 20){
-    /*LOAD*/
-  }else if(command == 21){
-    /*STORE*/
-  }else if(command == 40){
-    /*JUMP*/
-  }else if(command == 41){
-    /*JNEG*/
-  }else if(command == 42){
-    /*JZ*/
-  }else if(command == 43){
-    /*HALT*/
-  }
+      mt_gotoXY (25, 1);
+      write (0, "Input/Output:", 14);
+      mt_gotoXY (26, 1);
+      write (0, ">", 2);
+
+      char buf[12];
+      read (1, buf, 12);
+      int minus_flag = 0;
+      if (buf[0] == '-')
+        {
+          minus_flag = 1;
+          buf[0] = '0';
+        }
+      int actual_num = (int)atoi (buf);
+      if (minus_flag == 1)
+        {
+          actual_num |= 0x4000;
+        }
+      if (actual_num <= 65535)
+        {
+          sc_memorySet (instructionCounter, actual_num);
+        }
+      else
+        {
+          return -1;
+        }
+    }
+  else if (command == 11)
+    { /*WRITE*/
+
+      rk_mytermregime (1, 0, 0, 1, 1);
+
+      mt_gotoXY (25, 1);
+      write (0, "Input/Output:", 14);
+
+      char buff[8];
+      int value, command, operand;
+
+      if (sc_memoryGet (instructionCounter, &value) < 0
+          || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
+        return -1;
+
+      snprintf (buff, 8, ">%c%02X%02X ", (value & 0x4000) ? '-' : '+', command,
+                operand);
+
+      mt_gotoXY (26, 1);
+      write (0, buff, 7);
+
+      char buf[12];
+      read (1, buf, 12); // ???
+    }
+  else if (command == 20)
+    { /*LOAD*/
+
+      int temp_accum = 0;
+      sc_memoryGet (instructionCounter, &temp_accum);
+      accumulator = temp_accum;
+    }
+  else if (command == 21)
+    { /*STORE*/
+
+      sc_memorySet (instructionCounter, accumulator);
+    }
+  else if (command == 40)
+    { /*JUMP ? */
+
+      int value, command, operand;
+      sc_memoryGet (instructionCounter, &value);
+      sc_commandDecode (value & 0x3FFF, &command, &operand);
+      instructionCounter = operand;
+      cursor = instructionCounter;
+    }
+  else if (command == 41)
+    { /*JNEG*/
+
+      if (accumulator & 0x4000)
+        {
+
+          int value, command, operand;
+          sc_memoryGet (instructionCounter, &value);
+          sc_commandDecode (value & 0x3FFF, &command, &operand);
+          instructionCounter = operand;
+          cursor = instructionCounter;
+        }
+      else
+        {
+          return -1;
+        }
+    }
+  else if (command == 42)
+    { /*JZ*/
+      if (accumulator == 0)
+        {
+
+          int value, command, operand;
+          sc_memoryGet (instructionCounter, &value);
+          sc_commandDecode (value & 0x3FFF, &command, &operand);
+          instructionCounter = operand;
+          cursor = instructionCounter;
+        }
+      else
+        {
+          return -1;
+        }
+    }
+  else if (command == 43)
+    { /*HALT*/
+      return 1;
+    }
 
   return 0;
 }
