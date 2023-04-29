@@ -1,4 +1,4 @@
-#include <MySimpleComputerApp/CU.h>
+#include <MySimpleComputerApp/CPU.h>
 #include <libcomputer/computerlib.h>
 #include <libmyBigChars/myBigChars.h>
 #include <libmyTerm/myTerm.h>

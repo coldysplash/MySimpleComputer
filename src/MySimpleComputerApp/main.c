@@ -1,4 +1,4 @@
-#include <MySimpleComputerApp/CU.h>
+#include <MySimpleComputerApp/CPU.h>
 #include <MySimpleComputerApp/interface.h>
 #include <fcntl.h>
 #include <libcomputer/computerlib.h>
@@ -17,15 +17,8 @@ main ()
       fprintf (stderr, "Error!\n");
       return -1;
     }
-  sc_regInit ();
-  sc_memoryInit ();
-  sc_regSet (FLAG_IGNOR_TACT_IMPULS, 1);
 
-  while (1)
-    {
-      output_SimpleComputer ();
-      handler_keys ();
-    }
+  CPU ();
 
   return 0;
 }

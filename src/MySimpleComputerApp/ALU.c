@@ -1,5 +1,5 @@
 #include <MySimpleComputerApp/ALU.h>
-#include <MySimpleComputerApp/CU.h>
+#include <MySimpleComputerApp/CPU.h>
 #include <libcomputer/computerlib.h>
 #include <stdio.h>
 #include <unistd.h>

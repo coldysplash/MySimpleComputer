@@ -1,5 +1,5 @@
 #include <MySimpleComputerApp/ALU.h>
-#include <MySimpleComputerApp/CU.h>
+#include <MySimpleComputerApp/CPU.h>
 #include <MySimpleComputerApp/interface.h>
 #include <fcntl.h>
 #include <libcomputer/computerlib.h>
@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/time.h>
 #include <termios.h>
 #include <unistd.h>
 
@@ -72,16 +73,15 @@ output_operation ()
       || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
     return -1;
 
-  if ((value & 0x4000))
-    {
-      command = 0;
-      operand = 0;
-      sc_regSet (FLAG_WRONG_COMMAND, 1);
-    }
-  else
-    {
-      sc_regSet (FLAG_WRONG_COMMAND, 0);
-    }
+  // if(sc_commandEncode (command, operand, &value) == -1)
+  //   {
+  //     sc_regSet (FLAG_WRONG_COMMAND, 1);
+  //     command = 0;
+  //     operand = 0;
+  //   }else{
+  //     sc_regSet (FLAG_WRONG_COMMAND, 0);
+  //   }
+
   snprintf (buff, 9, "%c%02X : %02X", '+', command, operand);
 
   mt_gotoXY (8, 70);
@@ -155,6 +155,20 @@ output_SimpleComputer ()
   mt_gotoXY (25, 1);
 }
 
+void
+reset_SimpleComputer ()
+{
+  sc_memoryInit ();
+  sc_regSet (FLAG_IGNOR_TACT_IMPULS, 1);
+  sc_regSet (FLAG_OVERFLOW, 0);
+  sc_regSet (FLAG_ERR_DIV_BY_ZERO, 0);
+  sc_regSet (FLAG_WRONG_ADDRESS, 0);
+  sc_regSet (FLAG_WRONG_COMMAND, 0);
+  instructionCounter = 0;
+  accumulator = 0;
+  cursor = 0;
+}
+
 int
 handler_keys ()
 {
@@ -166,19 +180,11 @@ handler_keys ()
 
   if (k == RESET)
     {
-      sc_memoryInit ();
-      sc_regSet (FLAG_IGNOR_TACT_IMPULS, 1);
-      sc_regSet (FLAG_OVERFLOW, 0);
-      sc_regSet (FLAG_ERR_DIV_BY_ZERO, 0);
-      sc_regSet (FLAG_WRONG_ADDRESS, 0);
-      sc_regSet (FLAG_WRONG_COMMAND, 0);
-      instructionCounter = 0;
-      accumulator = 0;
-      cursor = 0;
+      reset_SimpleComputer ();
     }
   else if (k == RUN)
     {
-      CU ();
+      sc_regSet (FLAG_IGNOR_TACT_IMPULS, 0);
     }
   else if (k == STEP)
     {
@@ -297,8 +303,6 @@ int
 CU ()
 {
 
-  sc_regSet (FLAG_IGNOR_TACT_IMPULS, 0);
-
   int check_flag_wrong_command = 0;
   int memory_cell = 0, command = 0, operand = 0;
   cursor = instructionCounter;
@@ -311,7 +315,9 @@ CU ()
 
   sc_memoryGet (instructionCounter, &memory_cell);
 
-  if (sc_commandDecode (memory_cell & 0x3FFF, &command, &operand) == -1)
+  sc_commandDecode (memory_cell & 0x3FFF, &command, &operand);
+
+  if (sc_commandEncode (command, operand, &memory_cell) == -1)
     {
       sc_regSet (FLAG_WRONG_COMMAND, 1);
       return -1;
@@ -374,8 +380,8 @@ CU ()
       mt_gotoXY (26, 1);
       write (0, buff, 7);
 
-      char buf[12];
-      read (1, buf, 12); // ???
+      char empty_buf[1];
+      read (1, empty_buf, 1);
     }
   else if (command == 20)
     { /*LOAD*/
@@ -437,4 +443,64 @@ CU ()
     }
 
   return 0;
+}
+
+void
+CU_run ()
+{
+  if (instructionCounter <= 99)
+    {
+      if (CU () == 0)
+        {
+          ++instructionCounter;
+        }
+      else
+        {
+          sc_regSet (FLAG_IGNOR_TACT_IMPULS, 1);
+          alarm (0);
+        }
+    }
+  else
+    {
+      raise (SIGUSR1);
+      alarm (0);
+    }
+}
+
+void
+CPU ()
+{
+  int flag_ignor_tact_impuls;
+  char empty_buf[2];
+
+  sc_regInit ();
+  sc_memoryInit ();
+  sc_regSet (FLAG_IGNOR_TACT_IMPULS, 1);
+
+  struct itimerval nval, oval;
+
+  nval.it_interval.tv_sec = 2;
+  nval.it_interval.tv_usec = 0;
+  nval.it_value.tv_sec = 1;
+  nval.it_value.tv_usec = 0;
+
+  signal (SIGALRM, CU_run);
+  signal (SIGUSR1, reset_SimpleComputer);
+
+  while (1)
+    {
+      sc_regGet (FLAG_IGNOR_TACT_IMPULS, &flag_ignor_tact_impuls);
+
+      output_SimpleComputer ();
+
+      if (flag_ignor_tact_impuls == 1)
+        {
+          handler_keys ();
+        }
+      else
+        {
+          setitimer (ITIMER_REAL, &nval, &oval);
+          read (1, empty_buf, 2);
+        }
+    }
 }
