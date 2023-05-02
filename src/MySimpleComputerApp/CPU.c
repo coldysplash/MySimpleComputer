@@ -321,7 +321,7 @@ CU ()
     {
       sc_regSet (FLAG_WRONG_COMMAND, 1);
       return -1;
-    };
+    }
 
   if (command == 30 || command == 31 || command == 32 || command == 33)
     {
@@ -452,10 +452,12 @@ CU_run ()
     {
       if (CU () == 0)
         {
-          ++instructionCounter;
+	  output_SimpleComputer ();
+          instructionCounter++;
         }
       else
         {
+	  output_SimpleComputer ();
           sc_regSet (FLAG_IGNOR_TACT_IMPULS, 1);
           alarm (0);
         }
@@ -479,7 +481,7 @@ CPU ()
 
   struct itimerval nval, oval;
 
-  nval.it_interval.tv_sec = 2;
+  nval.it_interval.tv_sec = 1.5;
   nval.it_interval.tv_usec = 0;
   nval.it_value.tv_sec = 1;
   nval.it_value.tv_usec = 0;
@@ -491,16 +493,15 @@ CPU ()
     {
       sc_regGet (FLAG_IGNOR_TACT_IMPULS, &flag_ignor_tact_impuls);
 
-      output_SimpleComputer ();
-
       if (flag_ignor_tact_impuls == 1)
         {
+ 	  output_SimpleComputer ();
           handler_keys ();
         }
       else
         {
           setitimer (ITIMER_REAL, &nval, &oval);
-          read (1, empty_buf, 2);
+	  read(1, empty_buf, 2);
         }
     }
 }
