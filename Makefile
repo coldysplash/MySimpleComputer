@@ -1,12 +1,10 @@
 CC = gcc
 FLAGS = -Wall -Wextra -Werror
-TFLAGS = -I thirdparty -I src
 
 APP_NAME = MySimpleComputer
 
 SRC_DIR = src
 OBJ_DIR = obj
-TEST_DIR = test
 BIN_DIR = bin
 LIB_DIR = lib
 
@@ -17,7 +15,6 @@ MAIN_DIR = $(SRC_DIR)/MySimpleComputerApp
 READKEY_DIR = $(SRC_DIR)/libmyReadkey
 
 OBJ_SRC_DIR = $(OBJ_DIR)/$(SRC_DIR)
-OBJ_TEST_DIR = $(OBJ_DIR)/$(TEST_DIR)
 
 APP_PATH = $(BIN_DIR)/$(APP_NAME)
 
@@ -31,13 +28,12 @@ PROJECT_OBJECTS = $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_D
 
 .PHONY: all mkdir
 
-all: mkdir $(APP_PATH) 
+all: mkdir $(APP_PATH)
 
 mkdir:
 	mkdir -p $(BIN_DIR)
 	mkdir -p $(OBJ_DIR)
 	mkdir -p $(OBJ_SRC_DIR)
-	mkdir -p $(OBJ_TEST_DIR)
 	mkdir -p $(LIB_DIR)
 
 $(APP_PATH) : $(PROJECT_OBJECTS) $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)

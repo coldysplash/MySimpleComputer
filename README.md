@@ -1,1 +1,4 @@
 # MySimpleComputer
+
+# build:
+#     make
