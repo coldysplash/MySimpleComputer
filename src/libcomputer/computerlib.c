@@ -51,7 +51,7 @@ sc_memoryGet (int address, int *value)
 int
 sc_memorySave (char *filename)
 {
-  FILE *file = fopen (filename, "w");
+  FILE *file = fopen (filename, "wb");
   if (file == NULL)
     {
       fclose (file);
@@ -69,14 +69,17 @@ sc_memorySave (char *filename)
 int
 sc_memoryLoad (char *filename)
 {
-  FILE *file = fopen (filename, "r");
+  FILE *file = fopen (filename, "rb");
   if (file == NULL)
     {
       fclose (file);
       return -1;
     }
 
-  fread (sc_ram, sizeof (int), 100, file);
+  for (int i = 0; i < memorysize; i++)
+    {
+      fread (&sc_ram[i], sizeof (int), 1, file);
+    }
 
   fclose (file);
 
