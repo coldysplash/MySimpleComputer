@@ -73,14 +73,16 @@ output_operation ()
       || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
     return -1;
 
-  // if(sc_commandEncode (command, operand, &value) == -1)
-  //   {
-  //     sc_regSet (FLAG_WRONG_COMMAND, 1);
-  //     command = 0;
-  //     operand = 0;
-  //   }else{
-  //     sc_regSet (FLAG_WRONG_COMMAND, 0);
-  //   }
+  if (sc_commandEncode (command, operand, &value) == -1)
+    {
+      sc_regSet (FLAG_WRONG_COMMAND, 1);
+      command = 0;
+      operand = 0;
+    }
+  else
+    {
+      sc_regSet (FLAG_WRONG_COMMAND, 0);
+    }
 
   snprintf (buff, 9, "%c%02X : %02X", '+', command, operand);
 
@@ -152,7 +154,7 @@ output_SimpleComputer ()
   output_operation ();
   output_flags ();
   output_BigChars ();
-  mt_gotoXY (25, 1);
+  mt_gotoXY (26, 1);
 }
 
 void
@@ -174,7 +176,7 @@ handler_keys ()
 {
   enum keys k;
 
-  rk_mytermregime (0, 0, 1, 1, 1);
+  rk_mytermregime (0, 0, 1, 0, 1);
 
   rk_readkey (&k);
 
@@ -281,6 +283,7 @@ handler_keys ()
             {
               instructionCounter = new_ic;
             }
+          cursor = instructionCounter;
         }
       else if (k == LOAD)
         {
@@ -452,13 +455,13 @@ CU_run ()
     {
       if (CU () == 0)
         {
-	  output_SimpleComputer ();
+          output_SimpleComputer ();
           instructionCounter++;
         }
       else
         {
-	  output_SimpleComputer ();
           sc_regSet (FLAG_IGNOR_TACT_IMPULS, 1);
+          output_SimpleComputer ();
           alarm (0);
         }
     }
@@ -473,7 +476,7 @@ void
 CPU ()
 {
   int flag_ignor_tact_impuls;
-  char empty_buf[2];
+  char empty_buf[1];
 
   sc_regInit ();
   sc_memoryInit ();
@@ -481,7 +484,7 @@ CPU ()
 
   struct itimerval nval, oval;
 
-  nval.it_interval.tv_sec = 1.5;
+  nval.it_interval.tv_sec = 2;
   nval.it_interval.tv_usec = 0;
   nval.it_value.tv_sec = 1;
   nval.it_value.tv_usec = 0;
@@ -495,13 +498,13 @@ CPU ()
 
       if (flag_ignor_tact_impuls == 1)
         {
- 	  output_SimpleComputer ();
+          output_SimpleComputer ();
           handler_keys ();
         }
       else
         {
           setitimer (ITIMER_REAL, &nval, &oval);
-	  read(1, empty_buf, 2);
+          read (1, empty_buf, 1);
         }
     }
 }
