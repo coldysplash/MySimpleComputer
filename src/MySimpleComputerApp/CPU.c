@@ -75,7 +75,6 @@ output_operation ()
 
   if (sc_commandEncode (command, operand, &value) == -1)
     {
-      sc_regSet (FLAG_WRONG_COMMAND, 1);
       command = 0;
       operand = 0;
     }
@@ -187,6 +186,7 @@ handler_keys ()
   else if (k == RUN)
     {
       sc_regSet (FLAG_IGNOR_TACT_IMPULS, 0);
+      output_SimpleComputer();
     }
   else if (k == STEP)
     {
@@ -309,6 +309,13 @@ CU ()
   int check_flag_wrong_command = 0;
   int memory_cell = 0, command = 0, operand = 0;
   cursor = instructionCounter;
+  
+  struct itimerval nval, oval;
+
+  nval.it_interval.tv_sec = 2;
+  nval.it_interval.tv_usec = 0;
+  nval.it_value.tv_sec = 1;
+  nval.it_value.tv_usec = 0;
 
   sc_regGet (FLAG_WRONG_COMMAND, &check_flag_wrong_command);
   if (check_flag_wrong_command == 1)
@@ -341,6 +348,8 @@ CU ()
       write (0, ">", 2);
 
       char buf[12];
+      alarm(0);
+
       read (1, buf, 12);
       int minus_flag = 0;
       if (buf[0] == '-')
@@ -356,6 +365,7 @@ CU ()
       if (actual_num <= 65535)
         {
           sc_memorySet (instructionCounter, actual_num);
+          setitimer (ITIMER_REAL, &nval, &oval);
         }
       else
         {
@@ -365,10 +375,8 @@ CU ()
   else if (command == 11)
     { /*WRITE*/
 
-      rk_mytermregime (1, 0, 0, 1, 1);
-
       mt_gotoXY (25, 1);
-      write (0, "Input/Output:", 14);
+      write (1, "Output:", 8);
 
       char buff[8];
       int value, command, operand;
@@ -381,10 +389,10 @@ CU ()
                 operand);
 
       mt_gotoXY (26, 1);
-      write (0, buff, 7);
+      write (1, buff, 7);
 
-      char empty_buf[1];
-      read (1, empty_buf, 1);
+      sleep(1);
+
     }
   else if (command == 20)
     { /*LOAD*/
@@ -476,7 +484,6 @@ void
 CPU ()
 {
   int flag_ignor_tact_impuls;
-  char empty_buf[1];
 
   sc_regInit ();
   sc_memoryInit ();
@@ -504,7 +511,7 @@ CPU ()
       else
         {
           setitimer (ITIMER_REAL, &nval, &oval);
-          read (1, empty_buf, 1);
+          sleep(1);
         }
     }
 }
