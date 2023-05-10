@@ -9,7 +9,7 @@ ALU (int command, int operand)
 {
   int value = 0;
 
-  if (operand > 0 && operand <= 99)
+  if (operand >= 0 && operand <= 99)
     {
       sc_memoryGet (operand, &value);
     }

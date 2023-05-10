@@ -408,7 +408,7 @@ CU ()
     }
   else if (command == 40)
     { /*JUMP ? */
-      if (operand > 0 && operand <= 99)
+      if (operand >= 0 && operand <= 99)
         {
           instructionCounter = operand;
           cursor = instructionCounter;
@@ -423,7 +423,7 @@ CU ()
 
       if (accumulator & 0x4000)
         {
-          if (operand > 0 && operand <= 99)
+          if (operand >= 0 && operand <= 99)
             {
               instructionCounter = operand;
               cursor = instructionCounter;
@@ -442,7 +442,7 @@ CU ()
     { /*JZ*/
       if (accumulator == 0)
         {
-          if (operand > 0 && operand <= 99)
+          if (operand >= 0 && operand <= 99)
             {
               instructionCounter = operand;
               cursor = instructionCounter;
@@ -463,7 +463,7 @@ CU ()
     }
   else if (command == 74)
     { /*MOVCR(пользовательская функция)*/
-      if (accumulator > 0 && accumulator <= 99)
+      if (accumulator >= 0 && accumulator <= 99)
         {
           sc_memorySet (accumulator, memory_cell);
         }
