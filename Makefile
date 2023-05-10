@@ -71,7 +71,7 @@ $(PROJECT_OBJECTS): $(PROJECT_SOURCES)
 
 #SimpleAssembler
 
-$(SAT_PATH) : $(OBJ_SAT_DIR)/main.o $(OBJ_SAT_DIR)/SAT.o
+$(SAT_PATH) : $(OBJ_SAT_DIR)/main.o $(OBJ_SAT_DIR)/SAT.o $(OBJ_SRC_DIR)/computerlib.o
 	$(CC) $(FLAGS) $^ -o $@
 
 $(OBJ_SAT_DIR)/main.o : $(SAT_DIR)/main.c
@@ -81,8 +81,9 @@ $(OBJ_SAT_DIR)/SAT.o : $(SAT_DIR)/SAT.c
 	$(CC) $(FLAGS) -I src -c $(SAT_DIR)/SAT.c -o $(OBJ_SAT_DIR)/SAT.o
 
 #RUN Mysimplecomputer
-run: $(APP_PATH)
-	$(APP_PATH)
+run:
+	make
+	$(SAT_PATH) test.sa test.o
 
 .PHONY: clean
 

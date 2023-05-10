@@ -1,8 +1,8 @@
+#include "SAT.h"
 #include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "SAT.h"
 
 void
 print_usage ()
@@ -21,7 +21,7 @@ main (int argc, char *argv[])
     }
   else
     {
-      SAT(argv[1], argv[2]);
+      SAT (argv[1], argv[2]);
     }
   return 0;
 }
