@@ -36,7 +36,7 @@ int check_command(char *buf_command){
     } else if (!strcmp(buf_command, "HALT")) {
         command = 43;
     } else {
-        fprintf(stderr, "[E] Unknown command, exiting..!\n");
+        fprintf(stderr, "Unknown command, exiting..!\n");
         return -1;
     }
 
@@ -48,61 +48,36 @@ SAT (char *inputfilename, char *outputfilename)
 {
 
   FILE *inputFile = fopen (inputfilename, "r");
-  size_t size_buf = 0;
-  if (inputFile != NULL)
-    {
-      fseek (inputFile, 0, SEEK_END);
-      size_buf = ftell (inputFile);
-      rewind (inputFile);
-    }
-  else
+
+  if (!inputFile)
     {
       fprintf(stderr, "Error input file..!\n");
       return -1;
     }
 
-  char *buf = malloc (size_buf + 1);
-  fread (buf, 1, size_buf + 1, inputFile);
-  buf[size_buf] = '\0';
-
   fclose (inputFile);
 
   memset (RAM, 0, sizeof (RAM));
 
-  printf("%ld\n", size_buf);
+    int counter_str = 0;
 
-    char *str = strtok (buf, "\n");
-
-    // while(str != NULL){
-
-    //     //printf("%s", str);
-
-    //     sat(str);
-
-    //     str = strtok(NULL, "\n");
-
-    // }
-
-
-  free (buf);
-
-  FILE *outputFile = fopen (outputfilename, "wb");
-  fclose (outputFile);
-
-  return 0;
-}
-
-int sat(char *buff){
-
-    if (buff[strlen(buff)] == '\n')
-        {
-          buff[strlen(buff)] = 0;
+    while (!feof (inputFile)){
+        if(counter_str > 99){
+            fprintf(stderr, "Instruction overflow..!\n");
+            return -1;
         }
-    char *token = strtok(buff, " ");
+        char buf[50] = { 0 };
+        fgets (buf, 50, inputFile);
+
+    if (buf[strlen(buf)] == '\n')
+        {
+          buf[strlen(buf)] = 0;
+        }
+    char *token = strtok(buf, " ");
     int address_cell = atoi(token);
 
     if(address_cell < 0 || address_cell > 99){
-        fprintf(stderr, "[E] Wrong address..!\n");
+        fprintf(stderr, "Wrong address..!\n");
         return -1;
     }
 
@@ -113,7 +88,7 @@ int sat(char *buff){
     int operand = atoi(token);
 
     if(operand > 65535){
-        fprintf(stderr, "[E] Wrong operand..!\n");
+        fprintf(stderr, "Wrong operand..!\n");
         return -1;
     }
 
@@ -124,6 +99,12 @@ int sat(char *buff){
 
     printf("%d\n ", value);
 
-    return 0;
+    counter_str++;
 
+    }
+
+  FILE *outputFile = fopen (outputfilename, "wb");
+  fclose (outputFile);
+
+  return 0;
 }
