@@ -50,8 +50,11 @@ output_accumulator ()
 
   snprintf (buff, 7, "%c%02X%02X ", (accumulator & 0x4000) ? '-' : '+',
             command, operand);
+
+  // snprintf (buff, 6, "%c%04X", (accumulator & 0x4000) ? '-' : '+',
+  // accumulator);
   mt_gotoXY (2, 74);
-  write (1, buff, 7);
+  write (1, buff, 6);
 }
 
 void
@@ -186,7 +189,7 @@ handler_keys ()
   else if (k == RUN)
     {
       sc_regSet (FLAG_IGNOR_TACT_IMPULS, 0);
-      output_SimpleComputer();
+      output_SimpleComputer ();
     }
   else if (k == STEP)
     {
@@ -309,7 +312,7 @@ CU ()
   int check_flag_wrong_command = 0;
   int memory_cell = 0, command = 0, operand = 0;
   cursor = instructionCounter;
-  
+
   struct itimerval nval, oval;
 
   nval.it_interval.tv_sec = 2;
@@ -348,7 +351,7 @@ CU ()
       write (0, ">", 2);
 
       char buf[12];
-      alarm(0);
+      alarm (0);
 
       read (1, buf, 12);
       int minus_flag = 0;
@@ -391,15 +394,12 @@ CU ()
       mt_gotoXY (26, 1);
       write (1, buff, 7);
 
-      sleep(1);
-
+      sleep (1);
     }
   else if (command == 20)
     { /*LOAD*/
 
-      int temp_accum = 0;
-      sc_memoryGet (instructionCounter, &temp_accum);
-      accumulator = temp_accum;
+      accumulator = operand;
     }
   else if (command == 21)
     { /*STORE*/
@@ -408,24 +408,30 @@ CU ()
     }
   else if (command == 40)
     { /*JUMP ? */
-
-      int value, command, operand;
-      sc_memoryGet (instructionCounter, &value);
-      sc_commandDecode (value & 0x3FFF, &command, &operand);
-      instructionCounter = operand;
-      cursor = instructionCounter;
+      if (operand > 0 && operand <= 99)
+        {
+          instructionCounter = operand;
+          cursor = instructionCounter;
+        }
+      else
+        {
+          return -1;
+        }
     }
   else if (command == 41)
     { /*JNEG*/
 
       if (accumulator & 0x4000)
         {
-
-          int value, command, operand;
-          sc_memoryGet (instructionCounter, &value);
-          sc_commandDecode (value & 0x3FFF, &command, &operand);
-          instructionCounter = operand;
-          cursor = instructionCounter;
+          if (operand > 0 && operand <= 99)
+            {
+              instructionCounter = operand;
+              cursor = instructionCounter;
+            }
+          else
+            {
+              return -1;
+            }
         }
       else
         {
@@ -436,12 +442,15 @@ CU ()
     { /*JZ*/
       if (accumulator == 0)
         {
-
-          int value, command, operand;
-          sc_memoryGet (instructionCounter, &value);
-          sc_commandDecode (value & 0x3FFF, &command, &operand);
-          instructionCounter = operand;
-          cursor = instructionCounter;
+          if (operand > 0 && operand <= 99)
+            {
+              instructionCounter = operand;
+              cursor = instructionCounter;
+            }
+          else
+            {
+              return -1;
+            }
         }
       else
         {
@@ -451,6 +460,13 @@ CU ()
   else if (command == 43)
     { /*HALT*/
       return 1;
+    }
+  else if (command == 74)
+    { /*MOVCR(пользовательская функция)*/
+      if (accumulator > 0 && accumulator <= 99)
+        {
+          sc_memorySet (accumulator, memory_cell);
+        }
     }
 
   return 0;
@@ -511,7 +527,7 @@ CPU ()
       else
         {
           setitimer (ITIMER_REAL, &nval, &oval);
-          sleep(1);
+          sleep (1);
         }
     }
 }

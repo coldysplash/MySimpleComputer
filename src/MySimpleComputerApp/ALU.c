@@ -8,7 +8,15 @@ int
 ALU (int command, int operand)
 {
   int value = 0;
-  sc_commandEncode (command, operand, &value);
+
+  if (operand > 0 && operand <= 99)
+    {
+      sc_memoryGet (operand, &value);
+    }
+  else
+    {
+      return -1;
+    }
 
   switch (command)
     {
@@ -19,7 +27,15 @@ ALU (int command, int operand)
       accumulator -= value;
       break;
     case 32:
-      accumulator /= value;
+      if (value != 0)
+        {
+          accumulator /= value;
+        }
+      else
+        {
+          sc_regSet (FLAG_ERR_DIV_BY_ZERO, 1);
+          return -1;
+        }
       break;
     case 33:
       accumulator *= value;

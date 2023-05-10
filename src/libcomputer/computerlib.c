@@ -7,7 +7,7 @@
 #define memorysize 100
 int sc_ram[memorysize]; // memory
 
-int sc_commands[] = { 10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43 };
+int sc_commands[] = { 10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43, 74 };
 
 #define MASK_DECODE_COMMAND 0x7f
 static int flag_reg;
@@ -135,7 +135,7 @@ int
 sc_commandEncode (int command, int operand, int *value)
 {
   bool flag_command = false;
-  for (int i = 0; i < 12; i++)
+  for (int i = 0; i < 13; i++)
     {
       if (command == sc_commands[i])
         {
