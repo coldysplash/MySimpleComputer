@@ -7,7 +7,6 @@ SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
 LIB_DIR = lib
-SAT_DIR_OBJ = satobjects
 
 BC_DIR = $(SRC_DIR)/libmyBigChars
 COMPLIB_DIR = $(SRC_DIR)/libcomputer
@@ -17,7 +16,6 @@ READKEY_DIR = $(SRC_DIR)/libmyReadkey
 SAT_DIR = $(SRC_DIR)/SimpleAssembler
 
 OBJ_SRC_DIR = $(OBJ_DIR)/$(SRC_DIR)
-OBJ_SAT_DIR = $(OBJ_DIR)/$(SAT_DIR_OBJ)
 
 APP_PATH = $(BIN_DIR)/$(APP_NAME)
 SAT_PATH = $(BIN_DIR)/sat
@@ -39,7 +37,6 @@ mkdir:
 	mkdir -p $(BIN_DIR)
 	mkdir -p $(OBJ_DIR)
 	mkdir -p $(OBJ_SRC_DIR)
-	mkdir -p $(OBJ_SAT_DIR)
 	mkdir -p $(LIB_DIR)
 
 #SimpleComputer
@@ -71,19 +68,16 @@ $(PROJECT_OBJECTS): $(PROJECT_SOURCES)
 
 #SimpleAssembler
 
-$(SAT_PATH) : $(OBJ_SAT_DIR)/main.o $(OBJ_SAT_DIR)/SAT.o $(OBJ_SRC_DIR)/computerlib.o
+$(SAT_PATH) : $(OBJ_SRC_DIR)/SAT.o $(OBJ_SRC_DIR)/computerlib.o
 	$(CC) $(FLAGS) $^ -o $@
 
-$(OBJ_SAT_DIR)/main.o : $(SAT_DIR)/main.c
-	$(CC) $(FLAGS) -I src -c $(SAT_DIR)/main.c -o $(OBJ_SAT_DIR)/main.o
+$(OBJ_SRC_DIR)/SAT.o : $(SAT_DIR)/SAT.c
+	$(CC) $(FLAGS) -I src -c $(SAT_DIR)/SAT.c -o $(OBJ_SRC_DIR)/SAT.o
 
-$(OBJ_SAT_DIR)/SAT.o : $(SAT_DIR)/SAT.c
-	$(CC) $(FLAGS) -I src -c $(SAT_DIR)/SAT.c -o $(OBJ_SAT_DIR)/SAT.o
-
-#RUN Mysimplecomputer
+#RUN SAT
 run:
 	make
-	$(SAT_PATH) test.sa test.o
+	$(SAT_PATH) code.sa result.o
 
 .PHONY: clean
 
