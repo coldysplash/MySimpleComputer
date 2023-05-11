@@ -289,7 +289,7 @@ handler_keys ()
       else if (k == LOAD)
         {
           read (1, buf, 12);
-          buf[strlen(buf) - 1] = '\0';
+          buf[strlen (buf) - 1] = '\0';
           sc_memoryLoad (buf);
         }
       else if (k == SAVE)
