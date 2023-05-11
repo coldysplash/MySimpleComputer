@@ -51,8 +51,6 @@ output_accumulator ()
   snprintf (buff, 7, "%c%02X%02X ", (accumulator & 0x4000) ? '-' : '+',
             command, operand);
 
-  // snprintf (buff, 6, "%c%04X", (accumulator & 0x4000) ? '-' : '+',
-  // accumulator);
   mt_gotoXY (2, 74);
   write (1, buff, 6);
 }
@@ -291,7 +289,7 @@ handler_keys ()
       else if (k == LOAD)
         {
           read (1, buf, 12);
-          // buf[strlen(buf -1)] = '\0';
+          buf[strlen (buf) - 1] = '\0';
           sc_memoryLoad (buf);
         }
       else if (k == SAVE)

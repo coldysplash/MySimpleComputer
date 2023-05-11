@@ -13,10 +13,13 @@ COMPLIB_DIR = $(SRC_DIR)/libcomputer
 TERM_DIR = $(SRC_DIR)/libmyTerm
 MAIN_DIR = $(SRC_DIR)/MySimpleComputerApp
 READKEY_DIR = $(SRC_DIR)/libmyReadkey
+SAT_DIR = $(SRC_DIR)/SimpleAssembler
 
 OBJ_SRC_DIR = $(OBJ_DIR)/$(SRC_DIR)
 
 APP_PATH = $(BIN_DIR)/$(APP_NAME)
+SAT_PATH = $(BIN_DIR)/sat
+SBT_PATH = $(BIN_DIR)/sbt
 
 LIB_COMPUTER_PATH = $(LIB_DIR)/libmySimpleComputer.a
 LIB_TERM_PATH = $(LIB_DIR)/libmyTerm.a
@@ -28,13 +31,15 @@ PROJECT_OBJECTS = $(OBJ_SRC_DIR)/main.o $(OBJ_SRC_DIR)/computerlib.o $(OBJ_SRC_D
 
 .PHONY: all mkdir
 
-all: mkdir $(APP_PATH)
+all: mkdir $(APP_PATH) $(SAT_PATH)
 
 mkdir:
 	mkdir -p $(BIN_DIR)
 	mkdir -p $(OBJ_DIR)
 	mkdir -p $(OBJ_SRC_DIR)
 	mkdir -p $(LIB_DIR)
+
+#SimpleComputer
 
 $(APP_PATH) : $(PROJECT_OBJECTS) $(LIB_COMPUTER_PATH) $(LIB_TERM_PATH) $(LIB_BC_PATH) $(LIB_READKEY_PATH)
 	$(CC) $(FLAGS) $^ -o $@
@@ -61,8 +66,18 @@ $(PROJECT_OBJECTS): $(PROJECT_SOURCES)
 	$(CC) $(FLAGS) -I src -c $(MAIN_DIR)/ALU.c -o $(OBJ_SRC_DIR)/ALU.o
 	$(CC) $(FLAGS) -I src -c $(MAIN_DIR)/CPU.c -o $(OBJ_SRC_DIR)/CPU.o 
 
-run: $(APP_PATH)
-	$(APP_PATH)
+#SimpleAssembler
+
+$(SAT_PATH) : $(OBJ_SRC_DIR)/SAT.o $(OBJ_SRC_DIR)/computerlib.o
+	$(CC) $(FLAGS) $^ -o $@
+
+$(OBJ_SRC_DIR)/SAT.o : $(SAT_DIR)/SAT.c
+	$(CC) $(FLAGS) -I src -c $(SAT_DIR)/SAT.c -o $(OBJ_SRC_DIR)/SAT.o
+
+#RUN SAT
+run:
+	make
+	$(SAT_PATH) code.sa SAT.o
 
 .PHONY: clean
 
