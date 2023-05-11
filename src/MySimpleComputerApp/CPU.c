@@ -400,14 +400,14 @@ CU ()
     }
   else if (command == 21)
     { /*STORE*/
-          if (operand >= 0 && operand <= 99)
-            {
-              sc_memorySet (operand, accumulator);
-            }
-          else
-            {
-              return -1;
-            }
+      if (operand >= 0 && operand <= 99)
+        {
+          sc_memorySet (operand, accumulator);
+        }
+      else
+        {
+          return -1;
+        }
     }
   else if (command == 40)
     { /*JUMP*/
@@ -418,7 +418,7 @@ CU ()
         }
       else
         {
-          sc_regSet(FLAG_WRONG_ADDRESS, 1);
+          sc_regSet (FLAG_WRONG_ADDRESS, 1);
           return -1;
         }
     }
@@ -435,11 +435,11 @@ CU ()
             }
           else
             {
-              sc_regSet(FLAG_WRONG_ADDRESS, 1);
+              sc_regSet (FLAG_WRONG_ADDRESS, 1);
               return -1;
             }
         }
-        return 0;
+      return 0;
     }
   else if (command == 42)
     { /*JZ*/
@@ -453,11 +453,11 @@ CU ()
             }
           else
             {
-              sc_regSet(FLAG_WRONG_ADDRESS, 1);
+              sc_regSet (FLAG_WRONG_ADDRESS, 1);
               return -1;
             }
         }
-        return 0;
+      return 0;
     }
   else if (command == 43)
     { /*HALT*/
