@@ -78,6 +78,7 @@ $(OBJ_SRC_DIR)/SAT.o : $(SAT_DIR)/SAT.c
 run:
 	make
 	$(SAT_PATH) code.sa SAT.o
+	$(APP_PATH)
 
 .PHONY: clean
 
