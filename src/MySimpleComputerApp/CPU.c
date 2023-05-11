@@ -396,16 +396,21 @@ CU ()
     }
   else if (command == 20)
     { /*LOAD*/
-
       accumulator = operand;
     }
   else if (command == 21)
     { /*STORE*/
-
-      sc_memorySet (instructionCounter, accumulator);
+          if (operand >= 0 && operand <= 99)
+            {
+              sc_memorySet (operand, accumulator);
+            }
+          else
+            {
+              return -1;
+            }
     }
   else if (command == 40)
-    { /*JUMP ? */
+    { /*JUMP*/
       if (operand >= 0 && operand <= 99)
         {
           instructionCounter = operand;
@@ -413,6 +418,7 @@ CU ()
         }
       else
         {
+          sc_regSet(FLAG_WRONG_ADDRESS, 1);
           return -1;
         }
     }
@@ -425,16 +431,15 @@ CU ()
             {
               instructionCounter = operand;
               cursor = instructionCounter;
+              return 0;
             }
           else
             {
+              sc_regSet(FLAG_WRONG_ADDRESS, 1);
               return -1;
             }
         }
-      else
-        {
-          return -1;
-        }
+        return 0;
     }
   else if (command == 42)
     { /*JZ*/
@@ -444,16 +449,15 @@ CU ()
             {
               instructionCounter = operand;
               cursor = instructionCounter;
+              return 0;
             }
           else
             {
+              sc_regSet(FLAG_WRONG_ADDRESS, 1);
               return -1;
             }
         }
-      else
-        {
-          return -1;
-        }
+        return 0;
     }
   else if (command == 43)
     { /*HALT*/
