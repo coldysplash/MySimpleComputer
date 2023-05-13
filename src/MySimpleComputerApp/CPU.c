@@ -192,6 +192,8 @@ handler_keys ()
   else if (k == STEP)
     {
       CU ();
+      alarm (0);
+      instructionCounter++;
     }
   else if (k == UP)
     {
@@ -313,7 +315,7 @@ CU ()
 
   struct itimerval nval, oval;
 
-  nval.it_interval.tv_sec = 2;
+  nval.it_interval.tv_sec = 1.5;
   nval.it_interval.tv_usec = 0;
   nval.it_value.tv_sec = 1;
   nval.it_value.tv_usec = 0;
@@ -341,8 +343,14 @@ CU ()
 
   if (command == 10)
     { /*READ*/
-      rk_mytermregime (1, 0, 0, 1, 1);
 
+      if (operand < 0 && operand > 99)
+        {
+          sc_regSet (FLAG_WRONG_ADDRESS, 1);
+          return -1;
+        }
+
+      rk_mytermregime (1, 0, 0, 1, 1);
       mt_gotoXY (25, 1);
       write (0, "Input/Output:", 14);
       mt_gotoXY (26, 1);
@@ -365,7 +373,7 @@ CU ()
         }
       if (actual_num <= 65535)
         {
-          sc_memorySet (instructionCounter, actual_num);
+          sc_memorySet (operand, actual_num);
           setitimer (ITIMER_REAL, &nval, &oval);
         }
       else
@@ -378,15 +386,21 @@ CU ()
 
       mt_gotoXY (25, 1);
       write (1, "Output:", 8);
-
       char buff[8];
-      int value, command, operand;
+      int val;
 
-      if (sc_memoryGet (instructionCounter, &value) < 0
-          || sc_commandDecode (value & 0x3FFF, &command, &operand) < 0)
-        return -1;
+      if (operand >= 0 && operand <= 99)
+        {
+          sc_memoryGet (operand, &val);
+        }
+      else
+        {
+          sc_regSet (FLAG_WRONG_ADDRESS, 1);
+          return -1;
+        }
+      sc_commandDecode (val & 0x3FFF, &command, &operand);
 
-      snprintf (buff, 8, ">%c%02X%02X ", (value & 0x4000) ? '-' : '+', command,
+      snprintf (buff, 8, ">%c%02X%02X ", (val & 0x4000) ? '-' : '+', command,
                 operand);
 
       mt_gotoXY (26, 1);
@@ -396,7 +410,15 @@ CU ()
     }
   else if (command == 20)
     { /*LOAD*/
-      accumulator = operand;
+      if (operand >= 0 && operand <= 99)
+        {
+          sc_memoryGet (operand, &accumulator);
+        }
+      else
+        {
+          sc_regSet (FLAG_WRONG_ADDRESS, 1);
+          return -1;
+        }
     }
   else if (command == 21)
     { /*STORE*/
@@ -406,6 +428,7 @@ CU ()
         }
       else
         {
+          sc_regSet (FLAG_WRONG_ADDRESS, 1);
           return -1;
         }
     }
@@ -413,7 +436,7 @@ CU ()
     { /*JUMP*/
       if (operand >= 0 && operand <= 99)
         {
-          instructionCounter = operand;
+          instructionCounter = operand - 1;
           cursor = instructionCounter;
         }
       else
@@ -429,7 +452,7 @@ CU ()
         {
           if (operand >= 0 && operand <= 99)
             {
-              instructionCounter = operand;
+              instructionCounter = operand - 1;
               cursor = instructionCounter;
               return 0;
             }
@@ -447,7 +470,7 @@ CU ()
         {
           if (operand >= 0 && operand <= 99)
             {
-              instructionCounter = operand;
+              instructionCounter = operand - 1;
               cursor = instructionCounter;
               return 0;
             }
@@ -457,7 +480,7 @@ CU ()
               return -1;
             }
         }
-      return 0;
+      // return 0;
     }
   else if (command == 43)
     { /*HALT*/
@@ -509,7 +532,7 @@ CPU ()
 
   struct itimerval nval, oval;
 
-  nval.it_interval.tv_sec = 2;
+  nval.it_interval.tv_sec = 1.5;
   nval.it_interval.tv_usec = 0;
   nval.it_value.tv_sec = 1;
   nval.it_value.tv_usec = 0;
