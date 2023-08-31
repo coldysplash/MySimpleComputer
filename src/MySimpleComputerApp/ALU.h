@@ -1,2 +1,2 @@
 #pragma once
-int ALU (int command, int operand);
+int ALU(int command, int operand);

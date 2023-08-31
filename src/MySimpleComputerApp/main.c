@@ -9,16 +9,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int
-main ()
-{
-  if (isatty (0) == 0 || isatty (1) == 0)
-    {
-      fprintf (stderr, "Error!\n");
-      return -1;
-    }
+int main() {
+  if (isatty(0) == 0 || isatty(1) == 0) {
+    fprintf(stderr, "Error!\n");
+    return -1;
+  }
 
-  CPU ();
+  CPU();
 
   return 0;
 }
